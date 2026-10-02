@@ -133,7 +133,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 ## Roadmap
 - [x] 0 Projektkontext (CLAUDE.md, docs/INHALTE.md, docs/PROMPTS.md)
 - [x] 1 Fundament: Setup, PWA, Deployment, Design-System & Shell (aus Cockpit)
-- [ ] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
+- [x] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
 - [ ] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
 - [ ] 4 Ideen-Speicher & Community-Fragen
 - [ ] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
@@ -177,3 +177,20 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     Marke 3).
   - iPhone: eigenes Playwright-Profil `iphone-portrait` (393×852) für E2E und Screenshots. Unter
     30rem Breite zeigt die Tab-Bar nur Symbole (Beschriftung bleibt für VoiceOver).
+- Schritt 2 (Tresor):
+  - Übernommen aus Kompass Schritt 2: Krypto-Schicht (PBKDF2 800.000 Iterationen → AES-GCM-256,
+    AAD `manager:v1:<tabelle>:<id>`), Tresor/Sperre (`src/services/vault.ts`, Face ID über den
+    Schlüsselbund), Inaktivitäts- und Hintergrundsperre, Passwort ändern (alles in einer
+    Transaktion neu verschlüsselt), Tab-Sync per liveQuery, „Passwort vergessen“ = alles löschen.
+  - Dexie **Version 2**: `meta`, `videos`, `ideas`, `posts`, `reports`, `plans`, `files`,
+    `secrets`, `snapshots`, `errorLog`. Indiziert nur `id`/`updatedAt`; alles andere nur in
+    `payload`. Kein Verlauf (anders als Kompass): Inhalte sind keine Kundendaten.
+  - Retention/Quellen sind Teil eines Beitrags (`post.retention`), keine eigene Tabelle – ein
+    Screenshot gehört immer zu genau einem Beitrag.
+  - `files`: Kopf (Name, Typ, Größe, Art) und Bytes getrennt verschlüsselt (`meta`/`payload`),
+    damit Listen ohne Entschlüsseln großer Bilder auskommen; max. 15 MB je Datei; nicht im
+    Speicher-Store, erst beim Öffnen entschlüsselt (`filesRepo.open`).
+  - Generisches `createRecordRepo` für alle Datentabellen (list/get/create/update/remove).
+  - Sperrbildschirm zeigt das App-Icon lebendig (`AppMark`: Linie zeichnet sich beim Prüfen,
+    Pfeil schnellt beim Entsperren hoch). Testpasswort `Manager-Test-2026!` (nur E2E/Demo).
+  - Entwicklermodus: „Verschlüsselung testen“ legt Test-Videopakete an und zeigt den Ciphertext.

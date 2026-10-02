@@ -12,6 +12,7 @@ const nav = {
   dev: 'Entwickler',
   collapse: 'Seitenleiste einklappen',
   expand: 'Seitenleiste ausklappen',
+  lock: 'Sperren',
 } as const;
 
 /** All user-facing texts (German). Components must not hard-code UI strings. */
@@ -21,6 +22,50 @@ export const de = {
     tagline: 'Dein Content- und Growth-Manager.',
   },
   nav,
+  lock: {
+    setupTitle: 'Willkommen beim Manager',
+    setupText:
+      'Lege ein App-Passwort fest. Damit werden deine Ideen, Skripte, Zahlen und Fotos auf diesem Gerät verschlüsselt.',
+    unlockTitle: 'Manager ist gesperrt',
+    unlockText: 'Gib dein App-Passwort ein – oder nutze Face ID über den Schlüsselbund.',
+    username: 'Manager',
+    password: 'App-Passwort',
+    passwordRepeat: 'Passwort wiederholen',
+    passwordHint: (min: number) =>
+      `Mindestens ${min} Zeichen. Ein Satz aus mehreren Wörtern ist gut.`,
+    strength: 'Stärke',
+    strengthLabels: ['zu kurz', 'schwach', 'mittel', 'gut', 'stark'],
+    warningTitle: 'Passwort vergessen = Daten verloren',
+    warningText:
+      'Niemand kann das Passwort zurücksetzen oder die Daten wiederherstellen. Lass Safari das Passwort im Schlüsselbund sichern – dann entsperrst du später per Face ID – und exportiere regelmäßig ein Backup.',
+    acknowledge: 'Verstanden: Ohne Passwort sind die Daten verloren.',
+    setupSubmit: 'Manager einrichten',
+    unlockSubmit: 'Entsperren',
+    working: 'Wird geprüft …',
+    errors: {
+      tooShort: (min: number) => `Das Passwort braucht mindestens ${min} Zeichen.`,
+      mismatch: 'Die Passwörter stimmen nicht überein.',
+      acknowledge: 'Bitte bestätige den Hinweis.',
+      wrong: 'Das Passwort stimmt nicht.',
+      wait: (seconds: number) => `Zu viele Versuche – bitte warte ${seconds} s.`,
+      failed: 'Das hat nicht geklappt. Bitte versuche es noch einmal.',
+    },
+    reasons: {
+      manual: 'Gesperrt.',
+      inactivity: 'Automatisch gesperrt, weil eine Weile nichts passiert ist.',
+      background: 'Gesperrt, weil der Manager im Hintergrund war.',
+      keyChanged: 'Das Passwort wurde in einem anderen Fenster geändert. Bitte neu entsperren.',
+    },
+    forgot: 'Passwort vergessen?',
+    forgotTitle: 'Passwort vergessen?',
+    forgotText:
+      'Ohne Passwort lassen sich die Daten nicht entschlüsseln – auch nicht vom Entwickler. Du kannst nur alles löschen und neu beginnen. Ein exportiertes Backup kannst du danach mit seinem damaligen Passwort wieder einspielen.',
+    resetConfirmLabel: 'Zum Bestätigen LÖSCHEN eingeben',
+    resetConfirmWord: 'LÖSCHEN',
+    resetSubmit: 'Alles löschen',
+    devHint: (password: string) => `Entwicklermodus · Testpasswort: ${password}`,
+    unavailable: 'Manager kann nicht starten',
+  },
   comingSoon: {
     badge: (step: number) => `Kommt in Schritt ${step}`,
     pages: {
@@ -67,10 +112,43 @@ export const de = {
       persistedHint:
         'Ohne dauerhaften Speicher darf iPadOS die Daten bei Platzmangel löschen. Installiere Manager als Homescreen-App und öffne es immer darüber.',
     },
+    security: {
+      title: 'Sicherheit',
+      lockNow: 'Jetzt sperren',
+      lockNowLabel: 'App sperren',
+      lockAfter: 'Automatisch sperren nach',
+      lockAfterOption: (minutes: number) => (minutes === 1 ? '1 Minute' : `${minutes} Minuten`),
+      lockAfterHint: 'Nach mehr als 1 Minute im Hintergrund sperrt Manager immer.',
+      password: 'App-Passwort',
+      changePassword: 'Passwort ändern',
+      encryption: 'Verschlüsselung',
+      encryptionValue: (iterations: number) =>
+        `AES-GCM 256 · PBKDF2-SHA-256 · ${new Intl.NumberFormat('de-DE').format(iterations)} Iterationen`,
+      lastDerivation: 'Letzte Schlüsselableitung',
+      lastDerivationValue: (ms: number) => `${ms} ms`,
+    },
+    changePassword: {
+      title: 'Passwort ändern',
+      text: 'Alle Daten werden mit dem neuen Passwort neu verschlüsselt. Danach gilt nur noch das neue Passwort – aktualisiere es auch im Schlüsselbund.',
+      current: 'Aktuelles Passwort',
+      next: 'Neues Passwort',
+      repeat: 'Neues Passwort wiederholen',
+      submit: 'Passwort ändern',
+      wrongCurrent: 'Das aktuelle Passwort stimmt nicht.',
+      done: 'Passwort geändert – alle Daten sind neu verschlüsselt.',
+    },
     about: 'Über Manager',
     developer: 'Entwickler',
     devMode: 'Entwicklermodus',
     devModeHint: 'Zeigt in der Navigation den Bereich „Entwickler“ mit der Komponentenübersicht.',
+    testPassword: (password: string) =>
+      `E2E-Tests und Screenshots nutzen das Testpasswort „${password}“ – nie für echte Daten verwenden.`,
+    resetDatabase: 'Datenbank zurücksetzen',
+    resetDatabaseHint: 'Löscht Passwort, alle Daten und Einstellungen auf diesem Gerät.',
+    resetTitle: 'Datenbank zurücksetzen?',
+    resetText:
+      'Passwort, alle Daten und Einstellungen werden auf diesem Gerät gelöscht. Das lässt sich nicht rückgängig machen.',
+    resetConfirm: 'Alles löschen',
   },
   system: {
     version: 'App-Version',
@@ -92,6 +170,31 @@ export const de = {
   },
   dev: {
     title: 'Entwickler',
+    vault: {
+      title: 'Verschlüsselung testen',
+      hint: 'Legt erfundene Test-Videopakete an, um die Verschlüsselung zu prüfen. Die Videos selbst kommen in Schritt 5.',
+      videos: 'Videopakete',
+      files: 'Dateien',
+      create: 'Testvideo anlegen',
+      update: 'Letztes ändern',
+      remove: 'Letztes löschen',
+      created: (topic: string) => `„${topic}“ angelegt`,
+      updated: (topic: string) => `„${topic}“ geändert`,
+      removed: (topic: string) => `„${topic}“ gelöscht`,
+      decrypted: 'Entschlüsselt im Speicher',
+      stored: 'So liegt das neueste Video in IndexedDB',
+      iv: 'IV',
+      ciphertext: 'Ciphertext',
+      bytes: (n: number) => `${n} Bytes`,
+      empty: 'Noch keine Testvideos.',
+      testTopics: [
+        'So teile ich mein Geld auf',
+        '3 Geldfehler in deinen 20ern',
+        'So investiere ich mein Geld',
+        '800.000 € steuerfrei?',
+      ],
+      statuses: ['Idee', 'Skript', 'Gedreht', 'Geschnitten', 'Veröffentlicht'],
+    },
     disabledTitle: 'Entwicklermodus ist aus',
     disabledText: 'Aktiviere ihn in den Einstellungen, um diesen Bereich zu sehen.',
     openSettings: 'Zu den Einstellungen',
@@ -209,6 +312,8 @@ export const de = {
     loading: 'Wird geladen …',
     moreActions: 'Weitere Aktionen',
     dismiss: 'Hinweis schließen',
+    showPassword: 'Passwort anzeigen',
+    hidePassword: 'Passwort verbergen',
   },
   errors: {
     title: 'Da ist etwas schiefgelaufen',
