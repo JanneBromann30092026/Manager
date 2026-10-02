@@ -134,7 +134,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 0 Projektkontext (CLAUDE.md, docs/INHALTE.md, docs/PROMPTS.md)
 - [x] 1 Fundament: Setup, PWA, Deployment, Design-System & Shell (aus Cockpit)
 - [x] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
-- [ ] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
+- [x] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
 - [ ] 4 Ideen-Speicher & Community-Fragen
 - [ ] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
 - [ ] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
@@ -194,3 +194,22 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Sperrbildschirm zeigt das App-Icon lebendig (`AppMark`: Linie zeichnet sich beim Prüfen,
     Pfeil schnellt beim Entsperren hoch). Testpasswort `Manager-Test-2026!` (nur E2E/Demo).
   - Entwicklermodus: „Verschlüsselung testen“ legt Test-Videopakete an und zeigt den Ciphertext.
+- Schritt 3 (Einstellungen, KI & Marke):
+  - Vorlagen aus docs/INHALTE.md in `src/data/templates/` (channel, content, rules, brand):
+    Kanalprofil, Rahmen, Ziel, Hook-Typen, CTA-Rotation, Skript-/Untertitel-/Cover-Regeln,
+    Report-Gliederung, Regeln, Growth-Prioritäten, Conversion-Checkliste, Posen, Farben.
+  - Dexie **Version 3**: Tabelle `brand` (ein verschlüsselter Datensatz; `brandRepo.get()` liefert
+    bis zum ersten Speichern die Vorlage). Felder: channel, rules, growth, colors (Hex),
+    fontFileId, photoFileId, poses (fileId + Stimmung), checklist, lastCta (für Schritt 5).
+  - Dateien (Schrift, Foto, Posen) über `filesRepo`; Schrift wird vor dem Speichern per FontFace
+    geprüft und aus den entschlüsselten Bytes registriert (Familie „Manager Brand“, keine
+    font-src nötig). Bilder als Blob-URLs (`useFileUrl`).
+  - KI: aus = Standard. Einstellungen `aiEnabled`/`aiModel` (unverschlüsselt, technisch), API-Key
+    verschlüsselt in `secrets` (`secretsRepo`, AAD `manager:v1:secrets:<key>`), Modelle in
+    `src/core/ai/models.ts` + eigene Modell-ID. Client `src/services/ai/client.ts`
+    (@anthropic-ai/sdk, dangerouslyAllowBrowser, `testConnection`, `generate`). CSP connect-src
+    um `https://api.anthropic.com` erweitert.
+  - Ein zentraler Systemprompt `src/core/ai/systemPrompt.ts` aus Kanalprofil, Ziel,
+    Growth-Prioritäten und Regeln; `CORE_AI_RULES` (keine Anlageberatung, Quellen,
+    „[unsicher]“, Entwürfe) stehen immer drin, auch wenn die Regeln bearbeitet werden.
+  - CTA-Rotation als reine Logik `src/core/cta.ts` (`nextCta`).

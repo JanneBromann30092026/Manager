@@ -6,7 +6,6 @@ import {
   Image,
   LayoutDashboard,
   Lightbulb,
-  Palette,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge, Surface } from '@/components/ui';
@@ -24,7 +23,6 @@ const PAGES: Record<ComingSoonKey, { title: string; icon: LucideIcon; step: numb
   stats: { title: de.nav.stats, icon: ChartColumn, step: 7 },
   plan: { title: de.nav.plan, icon: CalendarDays, step: 8 },
   ideas: { title: de.nav.ideas, icon: Lightbulb, step: 4 },
-  brand: { title: de.nav.brand, icon: Palette, step: 3 },
 };
 
 /** Friendly placeholder for a page that a later roadmap step fills in. */

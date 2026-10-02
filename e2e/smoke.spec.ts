@@ -52,7 +52,7 @@ test('navigation switches pages', async ({ page }) => {
     ['Zahlen', 'Kommt in Schritt 7'],
     ['Plan', 'Kommt in Schritt 8'],
     ['Ideen', 'Kommt in Schritt 4'],
-    ['Marke', 'Kommt in Schritt 3'],
+    ['Marke', 'Kanalprofil'],
     ['Einstellungen', 'Darstellung'],
     ['Start', 'Kommt in Schritt 7'],
   ] as const;
