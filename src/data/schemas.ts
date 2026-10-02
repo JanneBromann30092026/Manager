@@ -16,6 +16,14 @@ import {
   VIDEO_KINDS,
   VIDEO_STATUSES,
 } from './domain';
+import {
+  BRAND_COLOR_DEFAULTS,
+  CHANNEL_DEFAULTS,
+  CONVERSION_KEYS,
+  GROWTH_DEFAULTS,
+  POSE_MOODS,
+  RULES_DEFAULTS,
+} from './templates';
 
 export const LIMITS = {
   settingKey: 100,
@@ -29,6 +37,8 @@ export const LIMITS = {
   planItems: 60,
   fileBytes: 15 * 1024 * 1024,
   fileName: 200,
+  listItems: 20,
+  poses: 12,
 } as const;
 
 // --- Building blocks --------------------------------------------------------
@@ -223,6 +233,66 @@ export const fileMetaSchema = z.object({
   createdAt: timestamp,
 });
 export type FileMeta = z.output<typeof fileMetaSchema>;
+
+// --- Brand (one record: channel profile, rules, brand kit, checklist) ------------
+
+const hexColor = z
+  .string()
+  .trim()
+  .regex(/^#[0-9a-fA-F]{6}$/)
+  .transform((value) => value.toUpperCase());
+
+/** List of short texts (rules, priorities, frame); empty lines are dropped. */
+const textList = (defaults: readonly string[]) =>
+  z
+    .array(z.string().trim().max(LIMITS.text))
+    .max(LIMITS.listItems)
+    .transform((items) => items.filter(Boolean))
+    .default([...defaults]);
+
+const channelSchema = z.object({
+  name: requiredText(LIMITS.title).default(CHANNEL_DEFAULTS.name),
+  platforms: z.string().trim().max(LIMITS.title).default(CHANNEL_DEFAULTS.platforms),
+  topics: z.string().trim().max(LIMITS.text).default(CHANNEL_DEFAULTS.topics),
+  positioning: z.string().trim().max(LIMITS.text).default(CHANNEL_DEFAULTS.positioning),
+  bioCore: z.string().trim().max(LIMITS.title).default(CHANNEL_DEFAULTS.bioCore),
+  tone: z.string().trim().max(LIMITS.text).default(CHANNEL_DEFAULTS.tone),
+  style: z.string().trim().max(LIMITS.text).default(CHANNEL_DEFAULTS.style),
+  frame: textList(CHANNEL_DEFAULTS.frame),
+});
+export type Channel = z.output<typeof channelSchema>;
+
+const poseSchema = z.object({ fileId: id, mood: z.enum(POSE_MOODS) });
+export type Pose = z.output<typeof poseSchema>;
+
+const brandFields = {
+  channel: channelSchema.prefault({}),
+  rules: textList(RULES_DEFAULTS),
+  growth: textList(GROWTH_DEFAULTS),
+  colors: z
+    .object({
+      deep: hexColor.default(BRAND_COLOR_DEFAULTS.deep),
+      main: hexColor.default(BRAND_COLOR_DEFAULTS.main),
+      light: hexColor.default(BRAND_COLOR_DEFAULTS.light),
+      accent: hexColor.default(BRAND_COLOR_DEFAULTS.accent),
+      text: hexColor.default(BRAND_COLOR_DEFAULTS.text),
+    })
+    .prefault({}),
+  /** Cover font (file kind "font"); family name for FontFace. */
+  fontFileId: id.optional(),
+  /** Cut-out photo (file kind "photo") and poses (file kind "pose"). */
+  photoFileId: id.optional(),
+  poses: z.array(poseSchema).max(LIMITS.poses).default([]),
+  /** Conversion checklist: done items. */
+  checklist: z.partialRecord(z.enum(CONVERSION_KEYS), z.boolean()).default({}),
+  /** Last used CTA of the rotation (step 5). */
+  lastCta: z.enum(CTA_TYPES).optional(),
+  demo: z.boolean().default(false),
+};
+export const brandInputSchema = z.object(brandFields);
+export type BrandInput = z.input<typeof brandInputSchema>;
+export const brandSchema = z.object({ id, ...brandFields, ...timestamps });
+export type Brand = z.output<typeof brandSchema>;
 
 // --- Settings -------------------------------------------------------------
 

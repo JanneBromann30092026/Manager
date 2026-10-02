@@ -7,7 +7,14 @@ import { recordAad } from '@/core/crypto/format';
 import { decryptJson, encryptJson } from '@/services/crypto/webCrypto';
 import { requireSessionKey } from '@/services/crypto/session';
 import { db, DATA_TABLES, type DataTable } from '../db';
-import { ideaSchema, planSchema, postSchema, reportSchema, videoSchema } from '../schemas';
+import {
+  brandSchema,
+  ideaSchema,
+  planSchema,
+  postSchema,
+  reportSchema,
+  videoSchema,
+} from '../schemas';
 import { dataStore, type DataMaps, type DataRecords } from '../store';
 import type { EncryptedRow } from '../types';
 
@@ -17,6 +24,7 @@ const SCHEMAS: { [T in DataTable]: z.ZodType<DataRecords[T]> } = {
   posts: postSchema,
   reports: reportSchema,
   plans: planSchema,
+  brand: brandSchema,
 };
 
 export function recordSchema<T extends DataTable>(table: T): z.ZodType<DataRecords[T]> {

@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router'
 import { AnimatePresence, motion } from 'motion/react';
 import { Spinner } from '@/components/ui';
 import { ComingSoonPage } from '@/features/coming-soon/ComingSoonPage';
+import { BrandPage } from '@/features/brand/BrandPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { de } from '@/i18n/de';
 import { easeOut } from '@/styles/motion';
@@ -61,7 +62,7 @@ function AnimatedRoutes() {
             <Route path="/stats" element={<ComingSoonPage page="stats" />} />
             <Route path="/plan" element={<ComingSoonPage page="plan" />} />
             <Route path="/ideas" element={<ComingSoonPage page="ideas" />} />
-            <Route path="/brand" element={<ComingSoonPage page="brand" />} />
+            <Route path="/brand" element={<BrandPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/dev/ui" element={<DevUiPage />} />
             <Route path="*" element={<Navigate to="/start" replace />} />
