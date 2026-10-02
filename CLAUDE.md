@@ -135,7 +135,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 1 Fundament: Setup, PWA, Deployment, Design-System & Shell (aus Cockpit)
 - [x] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
 - [x] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
-- [ ] 4 Ideen-Speicher & Community-Fragen
+- [x] 4 Ideen-Speicher & Community-Fragen
 - [ ] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
 - [ ] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
 - [ ] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
@@ -213,3 +213,14 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     Growth-Prioritäten und Regeln; `CORE_AI_RULES` (keine Anlageberatung, Quellen,
     „[unsicher]“, Entwürfe) stehen immer drin, auch wenn die Regeln bearbeitet werden.
   - CTA-Rotation als reine Logik `src/core/cta.ts` (`nextCta`).
+- Schritt 4 (Ideen):
+  - Idee hat zusätzlich `personal` (persönliches „So mache ich es“-Thema, Growth-Priorität 2);
+    neues Feld mit Default, keine Dexie-Migration nötig. Bei eigenen Ideen wird es aus dem Titel
+    vorbelegt (`looksPersonal`: ich/mein…), bei Community-Fragen nie automatisch.
+  - Reine Logik `src/core/ideas.ts`: `parseBulkIdeas` (eine pro Zeile, Aufzählungszeichen und
+    Duplikate weg, max. 50), Priorität `ideaScore` (Community 4, persönlich 3, Serie 2,
+    Podcast 1), Sortierung offen → gedreht → veröffentlicht, Filter Status/Quelle/Serie/Suche.
+  - `createRecordRepo.createMany` legt mehrere Datensätze in einer Transaktion an.
+  - „Neues Video starten“ setzt die Idee auf „geplant“ und öffnet „Videos“ (Platzhalter bis
+    Schritt 5, der dort ein Paket aus der Idee anlegt).
+  - Screenshots legen erfundene Demo-Ideen über „Mehrere einfügen“ an.

@@ -113,6 +113,8 @@ const ideaFields = {
   source: z.enum(IDEA_SOURCES).default('own'),
   series: optionalText(LIMITS.series),
   hookType: z.enum(HOOK_TYPES).optional(),
+  /** Personal "so mache ich es" topic (growth priority 2: ranks above lexicon topics). */
+  personal: z.boolean().default(false),
   notes: optionalText(LIMITS.text),
   status: z.enum(IDEA_STATUSES).default('idea'),
   videoId: id.optional(),

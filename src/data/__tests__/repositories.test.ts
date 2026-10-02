@@ -85,7 +85,23 @@ describe('ideas, posts, reports and plans', () => {
       title: 'Lohnt sich ein Bausparvertrag?',
       source: 'community',
     });
-    expect(idea).toMatchObject({ source: 'community', status: 'idea' });
+    expect(idea).toMatchObject({ source: 'community', status: 'idea', personal: false });
+  });
+
+  it('create several ideas in one go', async () => {
+    const ideas = await ideasRepo.createMany([
+      { title: 'Frage 1', source: 'community' },
+      { title: 'Frage 2', source: 'community' },
+    ]);
+    expect(ideas).toHaveLength(2);
+    expect(ideas[1]!.createdAt > ideas[0]!.createdAt).toBe(true);
+    expect(await db.ideas.count()).toBe(2);
+    expect(ideasRepo.list()).toHaveLength(2);
+    await expect(ideasRepo.createMany([{ title: 'ok' }, { title: ' ' }])).rejects.toBeInstanceOf(
+      ValidationError,
+    );
+    expect(await db.ideas.count()).toBe(2);
+    expect(await ideasRepo.createMany([])).toEqual([]);
   });
 
   it('keep unknown numbers empty instead of estimating them', async () => {
