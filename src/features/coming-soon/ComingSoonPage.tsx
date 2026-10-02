@@ -5,7 +5,6 @@ import {
   Clapperboard,
   Image,
   LayoutDashboard,
-  Lightbulb,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge, Surface } from '@/components/ui';
@@ -22,7 +21,6 @@ const PAGES: Record<ComingSoonKey, { title: string; icon: LucideIcon; step: numb
   covers: { title: de.nav.covers, icon: Image, step: 6 },
   stats: { title: de.nav.stats, icon: ChartColumn, step: 7 },
   plan: { title: de.nav.plan, icon: CalendarDays, step: 8 },
-  ideas: { title: de.nav.ideas, icon: Lightbulb, step: 4 },
 };
 
 /** Friendly placeholder for a page that a later roadmap step fills in. */

@@ -47,6 +47,25 @@ export function createRecordRepo<T extends DataTable, S extends z.ZodType>(
       return record;
     },
 
+    /** Creates several records in one transaction (all or nothing). */
+    async createMany(inputs: readonly z.input<S>[]): Promise<Item[]> {
+      if (inputs.length === 0) return [];
+      let previous: string | undefined;
+      const records = inputs.map((input) => {
+        const fields = parseOrThrow(inputSchema, input) as object;
+        const now = nextTimestamp(previous);
+        previous = now;
+        return validateRecord(table, {
+          ...fields,
+          id: crypto.randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+      await commit(records.map((record) => ({ table, record })));
+      return records;
+    },
+
     async update(id: string, patch: Partial<z.input<S>>): Promise<Item> {
       const current = requireRecord(table, id);
       const record = validateRecord(table, {

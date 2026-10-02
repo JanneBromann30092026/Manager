@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Spinner } from '@/components/ui';
 import { ComingSoonPage } from '@/features/coming-soon/ComingSoonPage';
 import { BrandPage } from '@/features/brand/BrandPage';
+import { IdeasPage } from '@/features/ideas/IdeasPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { de } from '@/i18n/de';
 import { easeOut } from '@/styles/motion';
@@ -61,7 +62,7 @@ function AnimatedRoutes() {
             <Route path="/covers" element={<ComingSoonPage page="covers" />} />
             <Route path="/stats" element={<ComingSoonPage page="stats" />} />
             <Route path="/plan" element={<ComingSoonPage page="plan" />} />
-            <Route path="/ideas" element={<ComingSoonPage page="ideas" />} />
+            <Route path="/ideas" element={<IdeasPage />} />
             <Route path="/brand" element={<BrandPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/dev/ui" element={<DevUiPage />} />

@@ -183,6 +183,33 @@ async function devVault(page: Page) {
   await page.waitForTimeout(3200); // let the toasts disappear
 }
 
+/** Invented demo ideas (never real data), pasted like Q&A questions. */
+const DEMO_IDEAS = [
+  'Lohnt sich ein Bausparvertrag?',
+  'Wie viel sollte ich mit 20 sparen?',
+  'So teile ich mein Gehalt auf',
+  'ETF oder Festgeld – was passt zu mir?',
+  'Mythos: Versicherungen braucht man erst mit 30',
+];
+
+async function ideas(page: Page) {
+  if ((await page.getByTestId('idea-card').count()) > 0) return;
+  await page.getByRole('button', { name: 'Mehrere einfügen' }).first().click();
+  await page.getByTestId('bulk-text').fill(DEMO_IDEAS.join('\n'));
+  await page.getByRole('button', { name: 'Alle speichern' }).click();
+  await page
+    .getByTestId('idea-card')
+    .nth(DEMO_IDEAS.length - 1)
+    .waitFor();
+  await page.getByText(/Ideen gespeichert/).waitFor({ state: 'detached' });
+}
+
+async function ideaEditor(page: Page) {
+  await ideas(page);
+  await page.getByTestId('idea-card').first().getByRole('button').first().click();
+  await page.getByTestId('idea-form').waitFor();
+}
+
 async function enableDevMode(page: Page) {
   await page.goto(`${PREVIEW_URL}#/settings`);
   const toggle = page.getByRole('switch', { name: 'Entwicklermodus' });
@@ -223,9 +250,10 @@ const SHOTS: Shot[] = [
   { route: '/covers', name: 'covers' },
   { route: '/stats', name: 'stats' },
   { route: '/plan', name: 'plan' },
-  { route: '/ideas', name: 'ideas' },
+  { route: '/ideas', name: 'ideas', prepare: ideas },
   { route: '/brand', name: 'brand' },
   { route: '/settings', name: 'settings', scroll: true },
+  { route: '/ideas', name: 'ideas-editor', prepare: ideaEditor },
   { route: '/settings', name: 'settings-security', prepare: settingsSecurity },
   { route: '/settings', name: 'settings-password', prepare: changePassword },
   { route: '/dev/ui', name: 'dev-ui', prepare: enableDevMode, scroll: true },
