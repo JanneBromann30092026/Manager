@@ -58,7 +58,7 @@ Definition of Done:
 
 ```
 Lies die CLAUDE.md. Wir setzen Roadmap-Schritt 2 um: Datenbank, Verschlüsselung & App-Sperre.
-Übernimm Tresor, Sperrbildschirm (Face ID über Schlüsselbund), Inaktivitätssperre, Passwort ändern und Dateitabelle aus Cockpit/Kompass. Dexie-Tabellen: meta, settings, secrets, files (verschlüsselte Bilder), videos, ideas, posts, retention, reports, plans, errorLog – Inhalte nur verschlüsselt in `payload`. Typen + zod-Schemas nach docs/INHALTE.md (Felder der Auswertung, Video-Paket, Idee). Tests wie in Kompass inkl. „kein Klartext in IndexedDB“.
+Übernimm Tresor, Sperrbildschirm (Face ID über Schlüsselbund), Inaktivitätssperre, Passwort ändern und Dateitabelle aus Cockpit/Kompass. Dexie-Tabellen: meta, settings, secrets, files (verschlüsselte Bilder), videos, ideas, posts (inkl. Retention), reports, plans, errorLog – Inhalte nur verschlüsselt in `payload`. Typen + zod-Schemas nach docs/INHALTE.md (Felder der Auswertung, Video-Paket, Idee). Tests wie in Kompass inkl. „kein Klartext in IndexedDB“.
 Definition of Done wie Schritt 1, Screenshots Sperrbildschirm, PR mit Prüfliste.
 ```
 

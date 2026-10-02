@@ -1,11 +1,33 @@
 import { Dexie, type EntityTable } from 'dexie';
-import type { Setting } from './types';
+import type {
+  EncryptedRow,
+  ErrorLogRow,
+  FileRow,
+  MetaEntry,
+  SecretRow,
+  Setting,
+  SnapshotRow,
+} from './types';
 
 /** Own name: Kompass and Synapse run on the same origin (GitHub Pages) with their own DBs. */
 export const DB_NAME = 'manager';
 
+/** Tables with content data (decrypted into the in-memory store after unlocking). */
+export const DATA_TABLES = ['videos', 'ideas', 'posts', 'reports', 'plans'] as const;
+export type DataTable = (typeof DATA_TABLES)[number];
+
 export class ManagerDb extends Dexie {
   settings!: EntityTable<Setting, 'key'>;
+  meta!: EntityTable<MetaEntry, 'key'>;
+  videos!: EntityTable<EncryptedRow, 'id'>;
+  ideas!: EntityTable<EncryptedRow, 'id'>;
+  posts!: EntityTable<EncryptedRow, 'id'>;
+  reports!: EntityTable<EncryptedRow, 'id'>;
+  plans!: EntityTable<EncryptedRow, 'id'>;
+  files!: EntityTable<FileRow, 'id'>;
+  secrets!: EntityTable<SecretRow, 'key'>;
+  snapshots!: EntityTable<SnapshotRow, 'id'>;
+  errorLog!: EntityTable<ErrorLogRow, 'id'>;
 
   constructor(name = DB_NAME) {
     super(name);
@@ -14,12 +36,28 @@ export class ManagerDb extends Dexie {
      * Migrations: never change an existing version. Every schema change is a new
      * `this.version(n + 1).stores({...changed tables only}).upgrade(tx => ...)`.
      * Only indexed fields are listed; all other fields are stored anyway.
+     * Content only ever lives in the encrypted `payload` of a row; readable are only
+     * technical fields (ids, timestamps).
      */
 
     // Step 1: technical settings only (theme, motion, sidebar, developer mode). Unencrypted
     // on purpose: they contain no personal data and are needed before the app is unlocked.
     this.version(1).stores({
       settings: 'key',
+    });
+
+    // Step 2: vault parameters and the encrypted tables (new tables, nothing to migrate).
+    this.version(2).stores({
+      meta: 'key',
+      videos: 'id, updatedAt',
+      ideas: 'id, updatedAt',
+      posts: 'id, updatedAt',
+      reports: 'id, updatedAt',
+      plans: 'id, updatedAt',
+      files: 'id, updatedAt',
+      secrets: 'key',
+      snapshots: 'id, createdAt',
+      errorLog: 'id, at',
     });
   }
 }

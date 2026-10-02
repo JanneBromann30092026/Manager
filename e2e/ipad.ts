@@ -36,3 +36,6 @@ export const IPHONE_PORTRAIT = {
     'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
   viewport: { width: 393, height: 852 },
 } satisfies BrowserContextOptions;
+
+/** Password of the E2E tests and screenshots (= E2E_TEST_PASSWORD in src/core/devConstants.ts). */
+export const TEST_PASSWORD = 'Manager-Test-2026!';
