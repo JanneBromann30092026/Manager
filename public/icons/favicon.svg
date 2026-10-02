@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Cover look: dark bottom left → light top right. -->
+    <linearGradient id="bg" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#061633"/>
+      <stop offset="0.55" stop-color="#0B5FA5"/>
+      <stop offset="1" stop-color="#4CC3FF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="28%" r="60%">
+      <stop offset="0" stop-color="#BDEBFF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#BDEBFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect id="background" width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" fill="url(#glow)"/>
+
+  <!-- Light-blue accent lines like on the covers. -->
+  <g stroke="#9FE0FF" stroke-opacity="0.45" stroke-width="8" stroke-linecap="round">
+    <path d="M70 120 L150 120"/>
+    <path d="M70 146 L118 146"/>
+  </g>
+
+  <!-- Play button, rounded. -->
+  <path d="M168 150 Q168 126 190 138 L370 240 Q390 252 370 264 L190 372 Q168 384 168 360 Z" fill="#FFFFFF"/>
+
+  <!-- Rising line inside the play button, its arrow breaks out top right. -->
+  <path d="M196 318 L246 272 L280 298 L392 182" fill="none" stroke="#0B5FA5" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M340 172 L404 170 L402 234" fill="none" stroke="#0B5FA5" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

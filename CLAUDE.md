@@ -132,7 +132,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 
 ## Roadmap
 - [x] 0 Projektkontext (CLAUDE.md, docs/INHALTE.md, docs/PROMPTS.md)
-- [ ] 1 Fundament: Setup, PWA, Deployment, Design-System & Shell (aus Cockpit)
+- [x] 1 Fundament: Setup, PWA, Deployment, Design-System & Shell (aus Cockpit)
 - [ ] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
 - [ ] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
 - [ ] 4 Ideen-Speicher & Community-Fragen
@@ -160,3 +160,20 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     ohne eigenen Server nicht sauber im Browser. Zu prüfen: Token im Meta-Dashboard erzeugen und in
     der App hinterlegen (60 Tage gültig, verlängerbar), ob graph.instagram.com Browser-Aufrufe (CORS)
     erlaubt. Fallback: Screenshot-Import mit KI.
+- Schritt 1 (Fundament):
+  - Basis ist Cockpit Schritt 1 (main, gleiche Paketversionen, Lockfile übernommen); umbenannt auf
+    Manager (Dexie `manager`, localStorage `manager.bootPrefs`, cacheId `manager`, Scope `/Manager/`;
+    E2E prüft alles).
+  - Farben (alle Textfarben ≥ 4,5:1): Akzent hell `#0369a1` (weiße Schrift), dunkel `#38bdf8` mit
+    dunkler Schrift `#04121f`. Zweitakzent Eisblau: `--signal` `#7dd3fc`/`#a5f3fc` für Flächen,
+    `--signal-fg` `#0e7490`/`#67e8f9` für Text. Hintergründe wie Cockpit (`#f3f5f9`/`#090d16`).
+    Icon-Töne `--brand-deep/--brand/--brand-light` (Tailwind `brand-*`).
+  - Icon: `public/icons/favicon.svg` – blauer Verlauf dunkel links unten → hell rechts oben, zwei
+    hellblaue Akzentlinien, weißer Play-Button mit steigender Linie, deren Pfeil oben rechts
+    herausragt. `npm run icons` erzeugt alle PNGs und Startbilder.
+  - Navigation: Start, Videos, Cover, Zahlen, Plan, Ideen, Marke, Einstellungen (+ Entwickler);
+    Routen /start, /videos, /covers, /stats, /plan, /ideas, /brand, /settings, /dev/ui. Tasten
+    `1`–`8`. Platzhalter nennen den Schritt (Start/Zahlen 7, Videos 5, Cover 6, Plan 8, Ideen 4,
+    Marke 3).
+  - iPhone: eigenes Playwright-Profil `iphone-portrait` (393×852) für E2E und Screenshots. Unter
+    30rem Breite zeigt die Tab-Bar nur Symbole (Beschriftung bleibt für VoiceOver).
