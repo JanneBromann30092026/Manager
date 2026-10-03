@@ -459,6 +459,72 @@ export const de = {
       avgNonFollower: 'Ø Nicht-Follower',
       empty: 'Noch keine Daten für diese Auswertung.',
     },
+    factors: {
+      title: 'Einflussfaktoren',
+      intro:
+        'Was bei deinen Instagram-Reels mit mehr oder weniger Aufrufen zusammenhängt – verglichen mit dem Median aller Reels. Zusammenhang heißt nicht Ursache.',
+      basis: (reels: number, median: string, seven: number) =>
+        `${reels} Reels verglichen · Median ${median} Aufrufe${seven ? ` · ${seven} davon mit Wert nach 7 Tagen` : ''}`,
+      tooYoung: (n: number) =>
+        n === 1
+          ? '1 Reel ist jünger als 48 Stunden und noch nicht dabei.'
+          : `${n} Reels sind jünger als 48 Stunden und noch nicht dabei.`,
+      notEnough: (n: number) =>
+        `Ab 4 Reels, die älter als 48 Stunden sind, geht es los (bisher ${n}). Mit automatischem Instagram-Abruf füllt sich das von selbst.`,
+      findings: 'Auffällig',
+      noFindings: 'Noch nichts Auffälliges – die Gruppen liegen nah am Median.',
+      finding: (label: string, ratio: string, posts: number) =>
+        `${label}: ${ratio} Aufrufe als üblich (${posts} Reels)`,
+      more: (percent: number) => `${percent} % mehr`,
+      less: (percent: number) => `${percent} % weniger`,
+      uncertain: 'unsicher',
+      uncertainHint: 'Unsicher = weniger als 3 Reels in der Gruppe oder weniger als 8 insgesamt.',
+      group: 'Gruppe',
+      reels: 'Reels',
+      medianViews: 'Median Aufrufe',
+      ratio: 'vs. Median',
+      interactions: 'Interaktionen / 1.000',
+      details: 'Alle Faktoren',
+      factors: {
+        weekday: 'Wochentag',
+        timeOfDay: 'Uhrzeit',
+        hookType: 'Hook-Typ',
+        series: 'Serie',
+        captionLength: 'Caption-Länge',
+        hashtags: 'Hashtags',
+        watchTime: 'Ø Wiedergabezeit',
+        gap: 'Abstand zum Reel davor',
+      },
+      groups: {
+        timeOfDay: {
+          morning: 'morgens (5–11 Uhr)',
+          midday: 'mittags (11–15 Uhr)',
+          afternoon: 'nachmittags (15–18 Uhr)',
+          evening: 'abends (18–22 Uhr)',
+          night: 'nachts (22–5 Uhr)',
+        },
+        captionLength: {
+          short: 'kurz (< 80 Zeichen)',
+          medium: 'mittel (80–250)',
+          long: 'lang (> 250)',
+        },
+        hashtags: { none: 'keine', few: '1–3', many: '4 oder mehr' },
+        watchTime: { low: 'unter 4 s', mid: '4–8 s', high: '8 s und mehr' },
+        gap: { daily: '0–1 Tage', short: '2–3 Tage', long: '4+ Tage' },
+      },
+      weekdays: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+      explain: 'Mit Claude erklären',
+      explaining: 'Claude denkt nach …',
+      explanation: 'Einschätzung (Claude)',
+      explainFailed: 'Claude konnte gerade nicht antworten.',
+    },
+    history: {
+      title: 'Verlauf',
+      hint: 'Aufrufe nach dem Veröffentlichen, aus den automatischen Abrufen.',
+      day: (days: number) => (days === 1 ? 'nach 1 Tag' : `nach ${days} Tagen`),
+      now: 'jetzt',
+      fetches: (n: number) => (n === 1 ? '1 Abruf' : `${n} Abrufe`),
+    },
   },
   plan: {
     title: 'Plan',
@@ -788,6 +854,30 @@ export const de = {
         'Instagram verweigert den Zugriff. Ist das Konto ein Professional-Konto und als Tester eingetragen?',
       network: 'Keine Verbindung zu Instagram. Bist du online?',
       failed: 'Instagram hat nicht wie erwartet geantwortet.',
+    },
+    sync: {
+      auto: 'Automatisch abrufen',
+      autoHint:
+        'Holt beim Öffnen der App alle Reels mit ihren Zahlen, höchstens alle 6 Stunden. Nur wenn die App offen ist – im Hintergrund geht das ohne Server nicht.',
+      status: 'Instagram',
+      never: 'noch nicht abgerufen',
+      ago: (minutes: number) =>
+        minutes < 1
+          ? 'gerade eben abgerufen'
+          : minutes < 60
+            ? `vor ${minutes} Min. abgerufen`
+            : minutes < 48 * 60
+              ? `vor ${Math.floor(minutes / 60)} Std. abgerufen`
+              : `vor ${Math.floor(minutes / 1440)} Tagen abgerufen`,
+      autoOn: 'automatisch',
+      now: 'Jetzt abrufen',
+      fetching: 'Rufe ab …',
+      done: (created: number, updated: number) =>
+        `Instagram abgerufen: ${created} neu, ${updated} aktualisiert.`,
+      newReels: (n: number) =>
+        n === 1 ? 'Instagram: 1 neues Reel übernommen.' : `Instagram: ${n} neue Reels übernommen.`,
+      noToken: 'Instagram ist noch nicht verbunden.',
+      connect: 'Verbinden',
     },
     import: {
       menu: 'Von Instagram abrufen',

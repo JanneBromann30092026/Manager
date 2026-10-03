@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { RefreshCw, Save, Trash2 } from 'lucide-react';
-import { Badge, Button, ConfirmDialog, PasswordInput, toast } from '@/components/ui';
+import { Badge, Button, ConfirmDialog, PasswordInput, Toggle, toast } from '@/components/ui';
 import { cleanToken, tokenStatus } from '@/core/instagram';
 import { de } from '@/i18n/de';
+import { useSettings } from '@/features/settings/settingsStore';
+import { syncInstagram } from '@/features/stats/instagramSync';
 import { instagramErrorText } from './instagramTexts';
 import {
   loadToken,
@@ -25,6 +27,8 @@ export function InstagramSettings() {
   const [replacing, setReplacing] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [now] = useState(() => new Date());
+  const autoSync = useSettings((s) => s.instagramAutoSync);
+  const setSetting = useSettings((s) => s.set);
 
   useEffect(() => {
     if (!loaded) reload();
@@ -42,6 +46,13 @@ export function InstagramSettings() {
       setDraft('');
       setReplacing(false);
       toast.success(t.saved(profile.username ?? '–'));
+      // First fetch right away, so „Zahlen“ fills without another tap.
+      if (useSettings.getState().instagramAutoSync)
+        void syncInstagram()
+          .then((done) => {
+            if (done) toast.info(t.sync.done(done.created, done.updated));
+          })
+          .catch(() => undefined);
     } catch (caught: unknown) {
       setError(instagramErrorText(caught));
     } finally {
@@ -141,6 +152,14 @@ export function InstagramSettings() {
         </div>
       )}
       {info && <p className="text-sm text-fg-muted">{t.refreshHint}</p>}
+      <div data-testid="instagram-auto">
+        <Toggle
+          label={t.sync.auto}
+          description={t.sync.autoHint}
+          checked={autoSync}
+          onChange={(value) => void setSetting('instagramAutoSync', value)}
+        />
+      </div>
       <details className="rounded-xl bg-surface-sunken px-4 py-3 text-sm text-fg-secondary">
         <summary className="min-h-11 cursor-pointer content-center font-medium text-fg">
           {t.howTo}

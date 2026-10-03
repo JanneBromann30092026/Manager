@@ -14,6 +14,7 @@ import { PostsTab } from './PostsTab';
 import { ReportTab } from './ReportTab';
 import { ScreenshotDialog } from './ScreenshotDialog';
 import { InstagramImportDialog } from './InstagramImportDialog';
+import { InstagramSyncBar } from './InstagramSyncBar';
 import { YouTubeImportDialog } from './YouTubeImportDialog';
 import { usePosts } from './statsData';
 
@@ -99,6 +100,7 @@ export function StatsPage() {
       }
     >
       <div className="flex flex-col gap-6 pb-8">
+        <InstagramSyncBar />
         <SegmentedControl
           label={t.tabsLabel}
           options={TABS.map((value) => ({ value, label: t.tabs[value] }))}

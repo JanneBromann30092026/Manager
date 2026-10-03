@@ -7,6 +7,8 @@ import {
   mediaPageSchema,
   newTokenRecord,
   reelToDraft,
+  captionStats,
+  isSyncDue,
   tokenStatus,
   topicFromCaption,
 } from './instagram';
@@ -98,9 +100,27 @@ describe('instagram mapping', () => {
       saves: 9,
       avgWatchSeconds: 6.5,
     });
+    expect(draft.publishedAt).toBe(new Date(reel!.timestamp).toISOString());
     expect(draft.newFollowers).toBeUndefined();
     expect(draft.nonFollowerPct).toBeUndefined();
     expect(draft.likes).toBeUndefined();
+  });
+
+  it('fetches automatically every 6 hours', () => {
+    const now = new Date('2026-10-03T12:00:00Z');
+    expect(isSyncDue('', now)).toBe(true);
+    expect(isSyncDue('2026-10-03T07:00:00.000Z', now)).toBe(false);
+    expect(isSyncDue('2026-10-03T06:00:00.000Z', now)).toBe(true);
+    // A clock that went backwards must not block fetching forever.
+    expect(isSyncDue('2026-10-04T12:00:00.000Z', now)).toBe(true);
+  });
+
+  it('counts caption characters and hashtags', () => {
+    expect(captionStats(undefined)).toEqual({});
+    expect(captionStats(' Gehalt 💸 #geld #finanzen_tipps ')).toEqual({
+      captionLength: 30,
+      hashtagCount: 2,
+    });
   });
 
   it('builds topics from captions', () => {

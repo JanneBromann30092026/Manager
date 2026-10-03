@@ -1,7 +1,8 @@
-import { knownValues, type MergePlan } from '@/core/csvImport';
+import { knownValues, type MergePlan, type PostDraft } from '@/core/csvImport';
+import { appendSnapshot, snapshotOf } from '@/core/postHistory';
 import { accountStatsRepo, postsRepo } from '@/data/repositories';
 import type { ValueSource } from '@/data/domain';
-import type { Post } from '@/data/schemas';
+import { LIMITS, type Post } from '@/data/schemas';
 import { BASELINE_STATS } from '@/data/templates';
 
 /**
@@ -13,8 +14,14 @@ export async function applyImport(
   source: Extract<ValueSource, 'csv' | 'youtubeApi' | 'instagramApi'> = 'csv',
 ): Promise<{ created: number; updated: number }> {
   const measuredAt = new Date().toISOString();
+  const fromApi = source !== 'csv';
+  // API fetches also record the values over time (Verlauf).
+  const history = (draft: PostDraft, base: Post['history'] = []) =>
+    fromApi ? appendSnapshot(base, snapshotOf(draft, measuredAt), LIMITS.postHistory) : base;
   const creates = plans.flatMap((plan) =>
-    plan.kind === 'create' ? [{ ...plan.draft, measuredAt, source }] : [],
+    plan.kind === 'create'
+      ? [{ ...plan.draft, measuredAt, source, history: history(plan.draft) }]
+      : [],
   );
   await postsRepo.createMany(creates);
   let updated = 0;
@@ -23,7 +30,7 @@ export async function applyImport(
     const current = postsRepo.get(plan.target.id) ?? plan.target;
     await postsRepo.update(current.id, {
       ...knownValues(plan.draft, current),
-      ...(source === 'csv' ? {} : { source, measuredAt }),
+      ...(fromApi ? { source, measuredAt, history: history(plan.draft, current.history) } : {}),
     });
     updated += 1;
   }

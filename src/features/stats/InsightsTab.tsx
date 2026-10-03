@@ -5,6 +5,7 @@ import type { Post } from '@/data/schemas';
 import { useDataStore } from '@/data/store';
 import { FORMAT_LABELS, HOOK_TEMPLATES } from '@/data/templates';
 import { de } from '@/i18n/de';
+import { FactorsSection } from './FactorsSection';
 import { formatNumber } from './statsData';
 
 const t = de.stats.insights;
@@ -80,6 +81,7 @@ export function InsightsTab({ posts }: { posts: readonly Post[] }) {
       <p className="px-1 text-sm text-fg-muted">
         {t.intro} {t.few}
       </p>
+      <FactorsSection posts={posts} />
       <Table
         title={t.hook}
         rows={groups.hook}

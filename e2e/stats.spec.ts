@@ -84,6 +84,7 @@ test('post by form: main metric, too early hint, weekly report as Markdown', asy
   await expect(page.getByTestId('post-nonFollowerPct')).toHaveValue('61,5');
   await expect(page.getByTestId('post-endHoldPct')).toHaveValue('18');
   await page.keyboard.press('Escape');
+  await expect(page.getByTestId('post-form')).toHaveCount(0);
 
   await page.getByRole('radio', { name: 'Report' }).click();
   await expect(page.getByTestId('report-week')).toContainText('2026-W40');
