@@ -13,7 +13,15 @@ import type {
 export const DB_NAME = 'manager';
 
 /** Tables with content data (decrypted into the in-memory store after unlocking). */
-export const DATA_TABLES = ['videos', 'ideas', 'posts', 'reports', 'plans', 'brand'] as const;
+export const DATA_TABLES = [
+  'videos',
+  'ideas',
+  'posts',
+  'reports',
+  'plans',
+  'brand',
+  'accountStats',
+] as const;
 export type DataTable = (typeof DATA_TABLES)[number];
 
 export class ManagerDb extends Dexie {
@@ -25,6 +33,7 @@ export class ManagerDb extends Dexie {
   reports!: EntityTable<EncryptedRow, 'id'>;
   plans!: EntityTable<EncryptedRow, 'id'>;
   brand!: EntityTable<EncryptedRow, 'id'>;
+  accountStats!: EntityTable<EncryptedRow, 'id'>;
   files!: EntityTable<FileRow, 'id'>;
   secrets!: EntityTable<SecretRow, 'key'>;
   snapshots!: EntityTable<SnapshotRow, 'id'>;
@@ -64,6 +73,11 @@ export class ManagerDb extends Dexie {
     // Step 3: brand record (channel profile, rules, brand kit) – new table, nothing to migrate.
     this.version(3).stores({
       brand: 'id, updatedAt',
+    });
+
+    // Step 7: account snapshots (follower count per day) – new table, nothing to migrate.
+    this.version(4).stores({
+      accountStats: 'id, updatedAt',
     });
   }
 }

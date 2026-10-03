@@ -9,6 +9,8 @@ import { IdeasPage } from '@/features/ideas/IdeasPage';
 import { VideoPage } from '@/features/videos/VideoPage';
 import { VideosPage } from '@/features/videos/VideosPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
+import { StartPage } from '@/features/start/StartPage';
+import { StatsPage } from '@/features/stats/StatsPage';
 import { de } from '@/i18n/de';
 import { easeOut } from '@/styles/motion';
 import { useReducedMotion } from '@/styles/useReducedMotion';
@@ -60,11 +62,11 @@ function AnimatedRoutes() {
         >
           <Routes location={location}>
             <Route path="/" element={<Navigate to="/start" replace />} />
-            <Route path="/start" element={<ComingSoonPage page="start" />} />
+            <Route path="/start" element={<StartPage />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/videos/:id" element={<VideoPage />} />
             <Route path="/covers" element={<CoversPage />} />
-            <Route path="/stats" element={<ComingSoonPage page="stats" />} />
+            <Route path="/stats" element={<StatsPage />} />
             <Route path="/plan" element={<ComingSoonPage page="plan" />} />
             <Route path="/ideas" element={<IdeasPage />} />
             <Route path="/brand" element={<BrandPage />} />

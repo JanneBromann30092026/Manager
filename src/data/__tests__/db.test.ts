@@ -6,13 +6,14 @@ import { settingsRepo } from '../repositories';
 import { resetDb } from './testDb';
 
 describe('database schema', () => {
-  it('opens version 3 under its own name with all tables', async () => {
+  it('opens version 4 under its own name with all tables', async () => {
     expect(await openDatabase()).toEqual({ ok: true });
     expect(db.name).toBe(DB_NAME);
     expect(DB_NAME).toBe('manager');
-    expect(db.verno).toBe(3);
+    expect(db.verno).toBe(4);
     expect(db.tables.map((table) => table.name).sort()).toEqual(
       [
+        'accountStats',
         'brand',
         'errorLog',
         'files',
@@ -32,7 +33,16 @@ describe('database schema', () => {
 
   it('indexes only technical fields of the encrypted tables', () => {
     const indexes = (name: string) => db.table(name).schema.indexes.map((index) => index.name);
-    for (const table of ['videos', 'ideas', 'posts', 'reports', 'plans', 'brand', 'files']) {
+    for (const table of [
+      'videos',
+      'ideas',
+      'posts',
+      'reports',
+      'plans',
+      'brand',
+      'accountStats',
+      'files',
+    ]) {
       expect(indexes(table)).toEqual(['updatedAt']);
     }
   });
@@ -46,7 +56,7 @@ describe('database schema', () => {
     v1.close();
     const upgraded = new ManagerDb(name);
     expect(await openDatabase(upgraded)).toEqual({ ok: true });
-    expect(upgraded.verno).toBe(3);
+    expect(upgraded.verno).toBe(4);
     expect(await upgraded.settings.get('theme')).toEqual({ key: 'theme', value: 'dark' });
     expect(await upgraded.videos.count()).toBe(0);
     upgraded.close();
@@ -65,6 +75,7 @@ describe('database schema', () => {
     expect(await openDatabase(upgraded)).toEqual({ ok: true });
     expect(await upgraded.videos.count()).toBe(1);
     expect(await upgraded.brand.count()).toBe(0);
+    expect(await upgraded.accountStats.count()).toBe(0);
     upgraded.close();
     await Dexie.delete(name);
   });

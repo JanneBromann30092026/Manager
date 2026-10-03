@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { DataTable } from './db';
-import type { Brand, Idea, Plan, Post, Report, Video } from './schemas';
+import type { AccountStat, Brand, Idea, Plan, Post, Report, Video } from './schemas';
 
 /** Decrypted record type per data table. */
 export interface DataRecords {
@@ -10,6 +10,7 @@ export interface DataRecords {
   reports: Report;
   plans: Plan;
   brand: Brand;
+  accountStats: AccountStat;
 }
 
 export type DataMaps = { [T in DataTable]: Record<string, DataRecords[T]> };
@@ -28,6 +29,7 @@ const EMPTY: DataMaps = {
   reports: {},
   plans: {},
   brand: {},
+  accountStats: {},
 };
 
 /**

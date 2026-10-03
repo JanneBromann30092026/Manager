@@ -253,6 +253,58 @@ async function coverStudio(page: Page) {
   await page.waitForTimeout(400);
 }
 
+/** Invented demo numbers (never real statistics), relative to today. */
+async function statsDemo(page: Page) {
+  await page.goto(`${PREVIEW_URL}#/stats`);
+  await page.getByRole('heading', { level: 1, name: 'Zahlen' }).waitFor();
+  if ((await page.getByTestId('post-card').count()) === 0) {
+    const day = (offset: number) => {
+      const date = new Date();
+      date.setDate(date.getDate() - offset);
+      return date.toISOString().slice(0, 10);
+    };
+    const csv = [
+      'Datum;Format;Thema;Hook;Aufrufe;Nicht-Follower;Shares;Saves;Neue Follower',
+      `${day(1)};Reel;So teile ich mein Gehalt auf;Frage;1.840;62;14;31;15`,
+      `${day(3)};Reel;3 Fehler beim ersten Depot;Zahl;1.210;48;5;12;6`,
+      `${day(8)};Reel;Brauche ich eine Haftpflicht?;Frage;960;55;3;9;7`,
+      `${day(10)};Story;Q&A: eure Fragen;;420;12;;;2`,
+    ].join('\n');
+    await page.getByTestId('stats-menu').click();
+    await page.getByRole('menuitem', { name: 'CSV importieren' }).click();
+    await page.getByTestId('import-text').fill(csv);
+    await page.getByTestId('import-run').click();
+    await page.getByTestId('post-card').nth(3).waitFor();
+    for (const [offset, followers] of [
+      [28, 128],
+      [0, 171],
+    ] as const) {
+      await page.getByTestId('stats-menu').click();
+      await page.getByRole('menuitem', { name: 'Followerstand eintragen' }).click();
+      await page.getByTestId('account-form').getByLabel('Datum').fill(day(offset));
+      await page.getByTestId('account-followers').fill(String(followers));
+      await page.getByTestId('account-save').click();
+      await page.getByTestId('account-form').waitFor({ state: 'detached' });
+    }
+    await page
+      .getByText(/Followerstand gespeichert/)
+      .last()
+      .waitFor({ state: 'detached' });
+  }
+}
+
+async function startDemo(page: Page) {
+  await statsDemo(page);
+  await page.goto(`${PREVIEW_URL}#/start`);
+  await page.getByTestId('goal-current').waitFor();
+}
+
+const statsTab = (name: string) => async (page: Page) => {
+  await statsDemo(page);
+  await page.getByRole('radio', { name }).click();
+  await page.waitForTimeout(400);
+};
+
 async function enableDevMode(page: Page) {
   await page.goto(`${PREVIEW_URL}#/settings`);
   const toggle = page.getByRole('switch', { name: 'Entwicklermodus' });
@@ -288,10 +340,10 @@ async function expandSidebar(page: Page) {
 }
 
 const SHOTS: Shot[] = [
-  { route: '/start', name: 'start' },
+  { route: '/start', name: 'start', prepare: startDemo, scroll: true },
   { route: '/videos', name: 'videos', prepare: videoList },
   { route: '/covers', name: 'covers', prepare: coverStudio, scroll: true },
-  { route: '/stats', name: 'stats' },
+  { route: '/stats', name: 'stats', prepare: statsDemo },
   { route: '/plan', name: 'plan' },
   { route: '/ideas', name: 'ideas', prepare: ideas },
   { route: '/brand', name: 'brand' },
@@ -300,6 +352,8 @@ const SHOTS: Shot[] = [
   { route: '/videos', name: 'video-package', prepare: videoPackage, scroll: true },
   { route: '/settings', name: 'settings-security', prepare: settingsSecurity },
   { route: '/settings', name: 'settings-password', prepare: changePassword },
+  { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
+  { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
   { route: '/dev/ui', name: 'dev-ui', prepare: enableDevMode, scroll: true },
   { route: '/dev/ui', name: 'dev-vault', prepare: devVault },
   { route: '/dev/ui', name: 'dev-modal', prepare: click('Modal öffnen') },

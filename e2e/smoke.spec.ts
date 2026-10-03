@@ -18,7 +18,7 @@ test('app shell loads without console errors or warnings', async ({ page }) => {
 
   await expect(page).toHaveURL(/#\/start$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Start' })).toBeVisible();
-  await expect(page.getByText('Kommt in Schritt 7')).toBeVisible();
+  await expect(page.getByTestId('goal-card')).toBeVisible();
   await expect(nav(page)).toBeVisible();
   await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
   await expect(page).toHaveTitle('Manager');
@@ -49,12 +49,12 @@ test('navigation switches pages', async ({ page }) => {
   const pages = [
     ['Videos', 'Noch keine Video-Pakete'],
     ['Cover', 'Textvarianten'],
-    ['Zahlen', 'Kommt in Schritt 7'],
+    ['Zahlen', 'Noch keine Zahlen'],
     ['Plan', 'Kommt in Schritt 8'],
     ['Ideen', 'Noch keine Ideen'],
     ['Marke', 'Kanalprofil'],
     ['Einstellungen', 'Darstellung'],
-    ['Start', 'Kommt in Schritt 7'],
+    ['Start', 'Neue Follower pro 1.000 Aufrufe'],
   ] as const;
   for (const [name, text] of pages) {
     await nav(page).getByRole('link', { name }).click();

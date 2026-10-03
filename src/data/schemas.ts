@@ -184,6 +184,26 @@ export type PostInput = z.input<typeof postInputSchema>;
 export const postSchema = z.object({ id, ...postFields, ...timestamps });
 export type Post = z.output<typeof postSchema>;
 
+// --- Account snapshots (follower count per day, from insights or the API) ------------
+
+const accountStatFields = {
+  date: isoDate,
+  platform: z.enum(PLATFORMS).default('instagram'),
+  followers: count,
+  /** Optional insight values of the period ending on `date`. */
+  views30d: count.optional(),
+  newFollowers30d: count.optional(),
+  views7d: count.optional(),
+  nonFollowerPct7d: percent.optional(),
+  source: z.enum(VALUE_SOURCES).default('manual'),
+  notes: optionalText(LIMITS.text),
+  demo: z.boolean().default(false),
+};
+export const accountStatInputSchema = z.object(accountStatFields);
+export type AccountStatInput = z.input<typeof accountStatInputSchema>;
+export const accountStatSchema = z.object({ id, ...accountStatFields, ...timestamps });
+export type AccountStat = z.output<typeof accountStatSchema>;
+
 // --- Weekly reports -------------------------------------------------------------
 
 const reportFields = {
@@ -194,6 +214,8 @@ const reportFields = {
   /** Exactly the three measures for next week (fewer while drafting). */
   actions: z.array(requiredText(LIMITS.text)).max(LIMITS.actions).default([]),
   progress: optionalText(LIMITS.text),
+  /** Texts were rewritten by Claude (draft, shown as „(Claude)“). */
+  fromAi: z.boolean().default(false),
   demo: z.boolean().default(false),
 };
 export const reportInputSchema = z.object(reportFields);

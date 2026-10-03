@@ -138,7 +138,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 4 Ideen-Speicher & Community-Fragen
 - [x] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
 - [x] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
-- [ ] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
+- [x] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
 - [ ] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
 - [ ] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
 - [ ] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
@@ -251,3 +251,24 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Export: PNG per Share-Sheet (`saveFile` in share.ts, iPad „Bild sichern“ → Fotos), sonst
     Download. Cover-PNGs werden nicht in der App gespeichert (`coverFileIds` bleibt ungenutzt).
   - Route `/covers?video=<id>`; „Zum Cover-Studio“ im Cover-Baustein öffnet sie.
+- Schritt 7 (Zahlen & Auswertung):
+  - Dexie **Version 4**: Tabelle `accountStats` (Followerstand je Tag + optionale 30-/7-Tage-Werte),
+    weil das Zielfortschritt-Tempo Followerstände braucht, nicht nur Follower je Beitrag.
+    Startwerte vom 28.09.2026 (`BASELINE_STATS` in templates/stats.ts, aus docs/INHALTE.md) per
+    Knopf „Startwerte übernehmen“. Report hat zusätzlich `fromAi`.
+  - Reine Logik: `core/dates.ts` (ISO-Wochen, UTC-Arithmetik), `core/metrics.ts` (pro 1.000 nur
+    aus Beiträgen mit beiden Werten, „zu früh“ < 24 h, Gruppen), `core/goal.ts` (Tempo: Followerstand
+    vor ~4 Wochen → sonst 30-Tage-Wert → sonst neue Follower der Beiträge; Status ehrlich
+    „verfehlt“), `core/csvImport.ts`, `core/report.ts` (Texte in templates/report.ts).
+  - CSV: Spalten am Namen erkannt (de/en, Umlaute egal), Zahlen deutsch/englisch, unbekannte Spalten
+    gemeldet, Fehler je Zeile. Zusammenführen nach Datum + Plattform + Thema (ohne Thema nur bei
+    genau einem Beitrag am Tag) → retention.csv ergänzt den Beitrag, unbekannte Werte überschreiben
+    nie bekannte. Echte Spaltennamen der CSVs aus dem Claude-Projekt waren nicht bekannt.
+  - Screenshot: Claude liest per Bild-Aufruf (`generateFromImage`, Bild auf 1600 px/JPEG
+    verkleinert) JSON aus; `core/ai/screenshot.ts` übernimmt nur eindeutige Werte. Das Formular
+    markiert sie „abgelesen“, Speichern = „Werte geprüft“. Screenshot wird nicht gespeichert.
+  - Wochenreport: Regel-Entwurf → bearbeitbar → optional „Mit Claude ausformulieren“
+    (`core/ai/report.ts`, JSON) → speichern, Markdown kopieren/sichern. Standardwoche Mo/Di die
+    vergangene, sonst die laufende.
+  - Start-Dashboard: Ziel, Hauptkennzahl (Woche/30 Tage), Videos dieser Woche (Plan folgt in
+    Schritt 8), nächster CTA, letzte Beiträge.
