@@ -25,7 +25,7 @@ const THEME_COLOR = '#090D16';
  * Vite dev server relies on inline scripts/styles for HMR. Extend deliberately, each with the
  * step that needs it: api.anthropic.com (optional AI) since step 3; YouTube Data and
  * Analytics API since step 9 (sign-in is a navigation to accounts.google.com, no connect-src);
- * Meta (Instagram) in step 10.
+ * graph.instagram.com (Instagram, read only) since step 10.
  */
 const CSP = [
   "default-src 'self'",
@@ -33,7 +33,7 @@ const CSP = [
   "style-src 'self'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self' https://api.anthropic.com https://www.googleapis.com https://youtubeanalytics.googleapis.com",
+  "connect-src 'self' https://api.anthropic.com https://www.googleapis.com https://youtubeanalytics.googleapis.com https://graph.instagram.com",
   "worker-src 'self'",
   "manifest-src 'self'",
   "object-src 'none'",

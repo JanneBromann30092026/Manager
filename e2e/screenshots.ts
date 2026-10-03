@@ -175,6 +175,13 @@ async function settingsYouTube(page: Page) {
   });
 }
 
+async function settingsInstagram(page: Page) {
+  await page.getByTestId('settings-instagram').evaluate((element) => {
+    element.scrollIntoView({ block: 'start' });
+  });
+  await page.getByTestId('settings-instagram').locator('summary').click();
+}
+
 async function changePassword(page: Page) {
   await page.getByRole('button', { name: 'Passwort ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Passwort ändern' });
@@ -387,6 +394,7 @@ const SHOTS: Shot[] = [
   { route: '/settings', name: 'settings-security', prepare: settingsSecurity },
   { route: '/settings', name: 'settings-password', prepare: changePassword },
   { route: '/settings', name: 'settings-youtube', prepare: settingsYouTube },
+  { route: '/settings', name: 'settings-instagram', prepare: settingsInstagram },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
   { route: '/plan', name: 'plan-calendar', prepare: planCalendar },

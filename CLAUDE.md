@@ -141,7 +141,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
 - [x] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
 - [x] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
-- [ ] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
+- [x] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
 - [ ] 11 Push-Mitteilungen
 - [ ] 12 Backups, Export & Feinschliff
 
@@ -301,3 +301,19 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     Tag + Titel. API-Import setzt Quelle „YouTube API“ und neuen Stand.
   - CSP connect-src + www.googleapis.com, youtubeanalytics.googleapis.com. Zielkarte und Follower-
     Karte zählen nur die Ziel-Plattform (Instagram).
+- Schritt 10 (Instagram):
+  - Machbarkeit (03.10.2026): Instagram API mit Instagram-Login (graph.instagram.com, v24.0),
+    Professional-Konto + eigene Meta-App im Entwicklungsmodus, man selbst als „Instagram Tester“.
+    Token im Meta-Dashboard („Token generieren“, langlebig 60 Tage) – kein Server, kein App-Secret.
+    Verlängern per `refresh_access_token` (ohne Secret, erst ab 24 h Alter). CORS aus der
+    Cloud-Umgebung nicht testbar (Proxy sperrt graph.instagram.com); Abrufe als einfache GETs mit
+    `access_token`-Parameter (kein Preflight), wie Instafeed.js.
+  - Token als verschlüsseltes Secret `instagramToken` (JSON: Token, gespeichert, Ablauf,
+    Benutzername); UI zeigt nur Status (`useInstagramToken`). Jeder Abruf verlängert automatisch,
+    Erinnerung auf „Start“ ab 7 Tagen vor Ablauf.
+  - Nur Reels (`media_product_type` REELS, max. 100); Insights views, likes, comments, shares,
+    saved, ig_reels_avg_watch_time (ms → s). **Neue Follower pro Reel und Nicht-Follower-Anteil
+    liefert die API nicht** (follows nur Feed/Story) → bleiben leer. Followerstand → `accountStats`.
+  - Gemeinsamer Abgleich `core/apiImport.ts` (`planApiImport`, auch für YouTube): Plattform-ID,
+    sonst Tag + Thema, sonst der einzige Beitrag des Tages ohne ID. Thema = erste Caption-Zeile ohne
+    Hashtags. CSP connect-src + graph.instagram.com.

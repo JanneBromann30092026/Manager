@@ -611,6 +611,68 @@ export const de = {
       toSettings: 'Zu den Einstellungen',
     },
   },
+  instagram: {
+    title: 'Instagram',
+    intro:
+      'Liest deine Reels und ihre Zahlen (nur lesend). Neue Follower pro Reel und den Nicht-Follower-Anteil liefert Instagram nicht – die trägst du weiter selbst oder per Screenshot ein.',
+    token: 'Zugriffstoken',
+    tokenHint: 'Aus dem Meta-Dashboard, beginnt mit „IG“. Wird verschlüsselt gespeichert.',
+    tokenInvalid: 'Das sieht nicht nach einem Instagram-Token aus (beginnt mit „IG“).',
+    save: 'Prüfen und speichern',
+    saved: (username: string) => `Token gespeichert – verbunden mit @${username}.`,
+    none: 'Kein Token gespeichert',
+    stored: (username: string) => (username ? `Verbunden mit @${username}` : 'Token gespeichert'),
+    daysLeft: (days: number) => (days === 1 ? 'gilt noch 1 Tag' : `gilt noch ${days} Tage`),
+    expired: 'Token abgelaufen – bitte einen neuen erzeugen.',
+    expiresSoon: (days: number) =>
+      `Dein Instagram-Token läuft in ${days === 1 ? '1 Tag' : `${days} Tagen`} ab. Öffne „Von Instagram abrufen“ oder verlängere ihn in den Einstellungen.`,
+    expiredBanner: 'Dein Instagram-Token ist abgelaufen. Erzeuge im Meta-Dashboard einen neuen.',
+    refresh: 'Jetzt verlängern',
+    refreshed: 'Token um 60 Tage verlängert.',
+    refreshHint:
+      'Verlängern geht erst, wenn der Token älter als 24 Stunden ist. Jeder Abruf verlängert ihn automatisch.',
+    remove: 'Token entfernen',
+    removed: 'Token entfernt.',
+    replace: 'Neuen Token eintragen',
+    howTo: 'So bekommst du den Token',
+    howToSteps: [
+      'Instagram: Professional-Konto (Creator) – Einstellungen → Kontotyp.',
+      'developers.facebook.com → App erstellen (Business), Anwendungsfall „Instagram“.',
+      'App-Rollen → Personen hinzufügen → „Instagram Tester“ mit deinem Benutzernamen; in Instagram unter „Apps und Websites“ annehmen.',
+      'In der App: Instagram → „API-Einrichtung mit Instagram-Login“ → „Token generieren“, mit Instagram anmelden, Token kopieren.',
+      'Hier einfügen. Kein App-Secret eintragen – das braucht die App nicht.',
+    ],
+    errors: {
+      noToken: 'Trag zuerst einen Instagram-Token ein (Einstellungen → Instagram).',
+      token: 'Der Token ist ungültig oder abgelaufen. Erzeuge im Meta-Dashboard einen neuen.',
+      permission:
+        'Instagram verweigert den Zugriff. Ist das Konto ein Professional-Konto und als Tester eingetragen?',
+      network: 'Keine Verbindung zu Instagram. Bist du online?',
+      failed: 'Instagram hat nicht wie erwartet geantwortet.',
+    },
+    import: {
+      menu: 'Von Instagram abrufen',
+      title: 'Von Instagram abrufen',
+      text: 'Holt deine neuesten Reels (bis 100) mit Aufrufen, Likes, Kommentaren, Shares, Saves und Wiedergabedauer.',
+      fetch: 'Abrufen',
+      fetching: 'Rufe ab …',
+      profile: (username: string, followers: string) => `@${username} · ${followers} Follower`,
+      summary: (created: number, updated: number) => `${created} neu, ${updated} aktualisiert`,
+      skipped: (n: number) =>
+        n === 1
+          ? '1 Beitrag ist kein Reel und bleibt draußen.'
+          : `${n} Beiträge sind keine Reels und bleiben draußen.`,
+      insightsFailed: (n: number) =>
+        `Bei ${n === 1 ? '1 Reel' : `${n} Reels`} fehlen die Statistiken; diese Werte bleiben leer.`,
+      none: 'Noch keine Reels auf dem Konto.',
+      missing:
+        'Neue Follower und Nicht-Follower-Anteil bleiben leer – Instagram liefert sie nicht pro Reel.',
+      apply: 'Übernehmen',
+      done: (created: number, updated: number) =>
+        `Instagram übernommen: ${created} neu, ${updated} aktualisiert.`,
+      toSettings: 'Zu den Einstellungen',
+    },
+  },
   ideas: {
     title: 'Ideen',
     add: 'Neue Idee',
