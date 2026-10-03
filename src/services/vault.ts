@@ -239,6 +239,14 @@ export const vault = {
     return true;
   },
 
+  /** Checks the app password without changing anything (backup export). */
+  async verifyPassword(password: string): Promise<boolean> {
+    const meta = await metaRepo.getVault();
+    if (!meta) return false;
+    const key = await deriveVaultKey(password, meta.kdf.salt, meta.kdf.iterations);
+    return checkKey(key, meta);
+  },
+
   /** Deletes the whole database (password, data, settings). The UI reloads afterwards. */
   async resetAll(): Promise<void> {
     stopSync?.();

@@ -13,6 +13,7 @@ import { useDataStore } from '@/data/store';
 import { CTA_TEMPLATES, GOAL_DEFAULTS, VIDEO_STATUS_LABELS } from '@/data/templates';
 import { de } from '@/i18n/de';
 import { InstagramTokenReminder } from '@/features/connections/InstagramSettings';
+import { BackupReminder } from '@/features/settings/BackupSettings';
 import { dayLabel, usePlan } from '@/features/plan/planData';
 import { PostRow } from '@/features/stats/PostsTab';
 import { formatDay, formatNumber, useGoal, usePosts } from '@/features/stats/statsData';
@@ -247,6 +248,7 @@ export function StartPage() {
     >
       <div className="grid gap-4 pb-8 wide:grid-cols-2">
         <InstagramTokenReminder />
+        <BackupReminder />
         <GoalCard />
         <MetricCard posts={posts} />
         <ThisWeek />

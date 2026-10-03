@@ -51,6 +51,8 @@ const schemas = {
   // Push reminders: schedule (technical) and a hash of the last copied GitHub secret
   pushSchedule: pushScheduleSchema,
   pushCopied: z.union([z.literal(''), z.string().regex(/^[0-9a-f]{16}$/)]),
+  // Backup: time of the last export (reminder after 14 days)
+  lastBackupAt: z.union([z.literal(''), z.iso.datetime()]),
   // Developer
   devMode: z.boolean(),
 };
@@ -70,6 +72,7 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   planDurations: PLAN_DEFAULT_MINUTES,
   pushSchedule: PUSH_DEFAULT_SCHEDULE,
   pushCopied: '',
+  lastBackupAt: '',
   devMode: false,
 };
 
