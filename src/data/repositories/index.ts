@@ -1,4 +1,5 @@
 import {
+  accountStatInputSchema,
   ideaInputSchema,
   planInputSchema,
   postInputSchema,
@@ -17,4 +18,5 @@ export const ideasRepo = createRecordRepo('ideas', ideaInputSchema);
 export const postsRepo = createRecordRepo('posts', postInputSchema);
 export const reportsRepo = createRecordRepo('reports', reportInputSchema);
 export const plansRepo = createRecordRepo('plans', planInputSchema);
+export const accountStatsRepo = createRecordRepo('accountStats', accountStatInputSchema);
 export { SECRET_KEYS, secretsRepo, type SecretKey } from './secretsRepo';

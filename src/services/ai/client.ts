@@ -77,3 +77,40 @@ export async function generate(options: {
     throw new AiError(classifyAiError(error));
   }
 }
+
+export type ImageMediaType = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/gif';
+
+/** One call with an image (screenshot reading); also with the central system prompt. */
+export async function generateFromImage(options: {
+  model: string;
+  prompt: string;
+  image: { mediaType: ImageMediaType; data: string };
+  maxTokens?: number;
+}): Promise<string> {
+  try {
+    const message = await client(await requireKey()).messages.create({
+      model: options.model,
+      max_tokens: options.maxTokens ?? 1_000,
+      system: buildSystemPrompt(brandRepo.get()),
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: options.image.mediaType,
+                data: options.image.data,
+              },
+            },
+            { type: 'text', text: options.prompt },
+          ],
+        },
+      ],
+    });
+    return textOf(message);
+  } catch (error: unknown) {
+    throw new AiError(classifyAiError(error));
+  }
+}

@@ -8,6 +8,7 @@ import { decryptJson, encryptJson } from '@/services/crypto/webCrypto';
 import { requireSessionKey } from '@/services/crypto/session';
 import { db, DATA_TABLES, type DataTable } from '../db';
 import {
+  accountStatSchema,
   brandSchema,
   ideaSchema,
   planSchema,
@@ -25,6 +26,7 @@ const SCHEMAS: { [T in DataTable]: z.ZodType<DataRecords[T]> } = {
   reports: reportSchema,
   plans: planSchema,
   brand: brandSchema,
+  accountStats: accountStatSchema,
 };
 
 export function recordSchema<T extends DataTable>(table: T): z.ZodType<DataRecords[T]> {
