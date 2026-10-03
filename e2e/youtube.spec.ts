@@ -119,6 +119,15 @@ async function saveClientId(page: Page) {
   await expect(page.getByText('Client-ID gespeichert.')).toBeVisible();
 }
 
+/** Manual import tests: switch off the automatic fetch after signing in. */
+async function manualOnly(page: Page) {
+  await page.getByTestId('youtube-auto').getByRole('switch').click();
+  await expect(page.getByTestId('youtube-auto').getByRole('switch')).toHaveAttribute(
+    'aria-checked',
+    'false',
+  );
+}
+
 test('sign in with a popup, test the connection, import videos into „Zahlen“', async ({
   page,
   context,
@@ -127,6 +136,7 @@ test('sign in with a popup, test the connection, import videos into „Zahlen“
   const tokens = await mockYouTube(context);
   await openApp(page, '/settings');
   await saveClientId(page);
+  await manualOnly(page);
 
   const popup = page.waitForEvent('popup');
   await page.getByTestId('youtube-sign-in').click();
@@ -170,6 +180,7 @@ test('redirect sign-in comes back after unlocking; missing analytics stay empty'
   await mockYouTube(context, 'off');
   await openApp(page, '/settings');
   await saveClientId(page);
+  await manualOnly(page);
   await page.getByTestId('youtube-sign-in-redirect').click();
   await unlock(page);
   await expect(page.getByTestId('youtube-state')).toContainText('Angemeldet bis');
@@ -195,4 +206,34 @@ test('unticked analytics scope is reported', async ({ page, context }) => {
   await (await popup).waitForEvent('close');
   await expect(page.getByText('Bitte beide Zugriffe erlauben')).toBeVisible();
   await expect(page.getByTestId('youtube-state')).toHaveText('Nicht angemeldet');
+});
+
+test('fetches automatically after signing in; an edited topic survives the next fetch', async ({
+  page,
+  context,
+}) => {
+  await mockGoogleSignIn(context);
+  await mockYouTube(context);
+  await openApp(page, '/settings');
+  await saveClientId(page);
+  await nav(page).getByRole('link', { name: 'Zahlen' }).click();
+  await expect(page.getByTestId('youtube-sync-status')).toContainText('nicht angemeldet');
+  const popup = page.waitForEvent('popup');
+  await page.getByTestId('youtube-sync-sign-in').click();
+  await (await popup).waitForEvent('close');
+  await expect(page.getByText('YouTube: 2 neue Videos übernommen.')).toBeVisible();
+  await expect(page.getByTestId('youtube-sync-status')).toContainText('gerade eben abgerufen');
+  await expect(page.getByTestId('post-card')).toHaveCount(2);
+
+  await page.getByTestId('post-card').filter({ hasText: 'Demo-Short' }).click();
+  await expect(page.getByTestId('post-history')).toContainText('1 Abruf');
+  await page.getByTestId('post-topic').fill('Mein eigener Titel');
+  await page.getByTestId('post-save').click();
+  await expect(page.getByTestId('post-form')).toHaveCount(0);
+
+  await page.getByTestId('youtube-sync-now').click();
+  await expect(page.getByText('YouTube abgerufen: 0 neu, 2 aktualisiert.')).toBeVisible();
+  await expect(page.getByTestId('post-card').filter({ hasText: 'Mein eigener Titel' })).toHaveCount(
+    1,
+  );
 });

@@ -100,6 +100,30 @@ describe('factor analysis', () => {
     expect(series.groups[1]!.interactionsPer1000).toBeUndefined();
   });
 
+  it('compares YouTube Shorts by length with new followers per 1,000 views', () => {
+    const short = (date: string, views: number, length: number, newFollowers: number) =>
+      reel(date, views, {
+        platform: 'youtube',
+        format: 'short',
+        newFollowers,
+        retention: { lengthSeconds: length },
+      });
+    const posts = [
+      short('2026-10-01', 2000, 25, 20),
+      short('2026-10-02', 1800, 28, 9),
+      short('2026-10-03', 400, 75, 2),
+      short('2026-10-04', 500, 80, 1),
+      reel('2026-10-05', 99_999),
+      reel('2026-10-06', 1, { platform: 'youtube', format: 'video' }),
+    ];
+    const result = analyzeFactors(posts, { now: NOW, platform: 'youtube' });
+    expect(result.reels).toBe(4);
+    const length = result.factors.find((factor) => factor.factor === 'length')!;
+    expect(length.groups.map((group) => group.key)).toEqual(['xs', 'mid']);
+    expect(length.groups[0]!.followersPer1000).toBeCloseTo((29 / 3800) * 1000);
+    expect(analyzeFactors(posts, { now: NOW }).reels).toBe(1);
+  });
+
   it('maps the local hour to a time of day', () => {
     const local = (hour: number) => new Date(2026, 9, 1, hour, 30).toISOString();
     expect(timeOfDay(local(7))).toBe('morning');

@@ -462,28 +462,31 @@ export const de = {
     factors: {
       title: 'Einflussfaktoren',
       intro:
-        'Was bei deinen Instagram-Reels mit mehr oder weniger Aufrufen zusammenhängt – verglichen mit dem Median aller Reels. Zusammenhang heißt nicht Ursache.',
+        'Was bei deinen kurzen Videos mit mehr oder weniger Aufrufen zusammenhängt – verglichen mit dem Median aller. Zusammenhang heißt nicht Ursache.',
+      platforms: { instagram: 'Instagram-Reels', youtube: 'YouTube Shorts' },
+      platformLabel: 'Plattform',
       basis: (reels: number, median: string, seven: number) =>
-        `${reels} Reels verglichen · Median ${median} Aufrufe${seven ? ` · ${seven} davon mit Wert nach 7 Tagen` : ''}`,
+        `${reels} Videos verglichen · Median ${median} Aufrufe${seven ? ` · ${seven} davon mit Wert nach 7 Tagen` : ''}`,
       tooYoung: (n: number) =>
         n === 1
-          ? '1 Reel ist jünger als 48 Stunden und noch nicht dabei.'
-          : `${n} Reels sind jünger als 48 Stunden und noch nicht dabei.`,
+          ? '1 Video ist jünger als 48 Stunden und noch nicht dabei.'
+          : `${n} Videos sind jünger als 48 Stunden und noch nicht dabei.`,
       notEnough: (n: number) =>
-        `Ab 4 Reels, die älter als 48 Stunden sind, geht es los (bisher ${n}). Mit automatischem Instagram-Abruf füllt sich das von selbst.`,
+        `Ab 4 Videos, die älter als 48 Stunden sind, geht es los (bisher ${n}). Mit dem automatischen Abruf füllt sich das von selbst.`,
       findings: 'Auffällig',
       noFindings: 'Noch nichts Auffälliges – die Gruppen liegen nah am Median.',
       finding: (label: string, ratio: string, posts: number) =>
-        `${label}: ${ratio} Aufrufe als üblich (${posts} Reels)`,
+        `${label}: ${ratio} Aufrufe als üblich (${posts} Videos)`,
       more: (percent: number) => `${percent} % mehr`,
       less: (percent: number) => `${percent} % weniger`,
       uncertain: 'unsicher',
-      uncertainHint: 'Unsicher = weniger als 3 Reels in der Gruppe oder weniger als 8 insgesamt.',
+      uncertainHint: 'Unsicher = weniger als 3 Videos in der Gruppe oder weniger als 8 insgesamt.',
       group: 'Gruppe',
-      reels: 'Reels',
+      reels: 'Videos',
       medianViews: 'Median Aufrufe',
       ratio: 'vs. Median',
       interactions: 'Interaktionen / 1.000',
+      followers: 'Follower / 1.000',
       details: 'Alle Faktoren',
       factors: {
         weekday: 'Wochentag',
@@ -493,7 +496,8 @@ export const de = {
         captionLength: 'Caption-Länge',
         hashtags: 'Hashtags',
         watchTime: 'Ø Wiedergabezeit',
-        gap: 'Abstand zum Reel davor',
+        length: 'Videolänge',
+        gap: 'Abstand zum Video davor',
       },
       groups: {
         timeOfDay: {
@@ -510,6 +514,7 @@ export const de = {
         },
         hashtags: { none: 'keine', few: '1–3', many: '4 oder mehr' },
         watchTime: { low: 'unter 4 s', mid: '4–8 s', high: '8 s und mehr' },
+        length: { xs: 'unter 30 s', short: '30–60 s', mid: '60–90 s', long: '90 s und mehr' },
         gap: { daily: '0–1 Tage', short: '2–3 Tage', long: '4+ Tage' },
       },
       weekdays: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
@@ -658,6 +663,18 @@ export const de = {
         'Zu diesem Google-Konto gibt es keinen YouTube-Kanal. Wähl bei der Anmeldung den Kanal aus.',
       network: 'Keine Verbindung. Bist du online?',
       failed: 'YouTube hat nicht wie erwartet geantwortet.',
+    },
+    sync: {
+      auto: 'Automatisch abrufen',
+      autoHint:
+        'Holt nach dem Anmelden und beim Öffnen der App deine Videos mit ihren Zahlen, höchstens alle 6 Stunden. Die Google-Anmeldung gilt nur 1 Stunde.',
+      status: 'YouTube',
+      signedOut: 'nicht angemeldet',
+      signIn: 'Anmelden',
+      newVideos: (n: number) =>
+        n === 1 ? 'YouTube: 1 neues Video übernommen.' : `YouTube: ${n} neue Videos übernommen.`,
+      done: (created: number, updated: number) =>
+        `YouTube abgerufen: ${created} neu, ${updated} aktualisiert.`,
     },
     import: {
       menu: 'Von YouTube abrufen',

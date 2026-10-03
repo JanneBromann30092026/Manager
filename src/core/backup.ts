@@ -28,6 +28,7 @@ export const BACKUP_SETTING_KEYS = [
   'aiModel',
   'googleClientId',
   'instagramAutoSync',
+  'youtubeAutoSync',
   'planBudget',
   'planDurations',
   'pushSchedule',
