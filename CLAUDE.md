@@ -366,3 +366,10 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     Serie, Caption-Länge, Hashtags, Ø Wiedergabezeit, Abstand zum Reel davor. Auffällig ab +25 %/
     −20 % und ≥ 2 Reels; „unsicher“ unter 3 Reels je Gruppe oder 8 insgesamt. Optional „Mit Claude
     erklären“ (`core/ai/factors.ts`, nur Zahlen der Auswertung).
+  - YouTube automatisch (`features/stats/youtubeSync.ts`): solange die Google-Anmeldung (1 Std.)
+    gilt, direkt nach dem Anmelden und bei Rückkehr in den Vordergrund, fällig nach 6 Std.
+    Einstellungen `youtubeAutoSync` (Standard an, im Backup) und `youtubeSyncedAt`. „Zahlen“ zeigt
+    beide Anbindungen (`SyncBar`: Instagram + YouTube, „Jetzt abrufen“/„Anmelden“).
+  - API-Abrufe überschreiben nie ein vorhandenes Thema (selbst bearbeitete Titel bleiben).
+  - Einflussfaktoren auch für YouTube Shorts (Umschalter, wenn beide Daten haben), Faktor
+    „Videolänge“ (`retention.lengthSeconds`) und Spalte neue Follower pro 1.000, wo bekannt.

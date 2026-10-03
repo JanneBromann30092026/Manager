@@ -33,6 +33,9 @@ const schemas = {
   // Instagram: fetch reels automatically when the app opens; time of the last fetch
   instagramAutoSync: z.boolean(),
   instagramSyncedAt: z.union([z.literal(''), z.iso.datetime()]),
+  // YouTube: fetch automatically while signed in; time of the last fetch
+  youtubeAutoSync: z.boolean(),
+  youtubeSyncedAt: z.union([z.literal(''), z.iso.datetime()]),
   // Weekly plan: time budget and time per task (templates, editable)
   planBudget: z
     .int()
@@ -73,6 +76,8 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
   instagramAutoSync: true,
   instagramSyncedAt: '',
+  youtubeAutoSync: true,
+  youtubeSyncedAt: '',
   planBudget: PLAN_BUDGET_MINUTES,
   planDurations: PLAN_DEFAULT_MINUTES,
   pushSchedule: PUSH_DEFAULT_SCHEDULE,

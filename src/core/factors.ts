@@ -14,6 +14,7 @@ export const FACTOR_KEYS = [
   'captionLength',
   'hashtags',
   'watchTime',
+  'length',
   'gap',
 ] as const;
 export type FactorKey = (typeof FACTOR_KEYS)[number];
@@ -24,6 +25,7 @@ export const FACTOR_GROUPS = {
   captionLength: ['short', 'medium', 'long'],
   hashtags: ['none', 'few', 'many'],
   watchTime: ['low', 'mid', 'high'],
+  length: ['xs', 'short', 'mid', 'long'],
   gap: ['daily', 'short', 'long'],
 } as const;
 
@@ -48,6 +50,8 @@ export interface FactorGroup {
   ratio: number;
   /** Likes, comments, shares and saves per 1,000 views (only reels with values). */
   interactionsPer1000?: number;
+  /** New followers per 1,000 views (only posts with both values, e.g. YouTube). */
+  followersPer1000?: number;
 }
 
 export interface FactorResult {
@@ -78,10 +82,22 @@ export interface FactorAnalysis {
   findings: Finding[];
 }
 
+export const FACTOR_PLATFORMS = ['instagram', 'youtube'] as const;
+export type FactorPlatform = (typeof FACTOR_PLATFORMS)[number];
+
+/** Short videos compared per platform: Instagram reels, YouTube Shorts. */
+export function isFactorPost(post: Post, platform: FactorPlatform): boolean {
+  return platform === 'instagram'
+    ? post.platform === 'instagram' && post.format === 'reel'
+    : post.platform === 'youtube' && post.format === 'short';
+}
+
 export interface FactorOptions {
   now: Date;
   /** Series of a post (from its video package). */
   seriesOf?: (post: Post) => string | undefined;
+  /** Instagram reels (default) or YouTube Shorts. */
+  platform?: FactorPlatform;
 }
 
 function median(values: readonly number[]): number {
@@ -116,6 +132,10 @@ function hashtagGroup(count: number) {
 
 function watchGroup(seconds: number) {
   return seconds < 4 ? 'low' : seconds < 8 ? 'mid' : 'high';
+}
+
+function lengthGroup(seconds: number) {
+  return seconds < 30 ? 'xs' : seconds < 60 ? 'short' : seconds < 90 ? 'mid' : 'long';
 }
 
 function gapGroup(days: number) {
@@ -154,7 +174,7 @@ const strength = (finding: Pick<Finding, 'ratio' | 'posts'>) =>
 /** Analyses the Instagram reels: median views per group of each factor. */
 export function analyzeFactors(posts: readonly Post[], options: FactorOptions): FactorAnalysis {
   const reels = posts
-    .filter((post) => post.platform === 'instagram' && post.format === 'reel')
+    .filter((post) => isFactorPost(post, options.platform ?? 'instagram'))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   // Days since the previous reel (posting rhythm), from all reels.
@@ -187,6 +207,10 @@ export function analyzeFactors(posts: readonly Post[], options: FactorOptions): 
       post.captionLength === undefined ? undefined : captionGroup(post.captionLength),
     hashtags: (post) =>
       post.hashtagCount === undefined ? undefined : hashtagGroup(post.hashtagCount),
+    length: (post) => {
+      const seconds = post.retention?.lengthSeconds;
+      return seconds === undefined ? undefined : lengthGroup(seconds);
+    },
     watchTime: (post) =>
       post.avgWatchSeconds === undefined ? undefined : watchGroup(post.avgWatchSeconds),
     gap: (post) => {
@@ -211,6 +235,10 @@ export function analyzeFactors(posts: readonly Post[], options: FactorOptions): 
             return value === undefined || views <= 0 ? [] : [{ value, views }];
           });
           const sumViews = withInteractions.reduce((sum, item) => sum + item.views, 0);
+          const withFollowers = items.filter(
+            ({ post, views }) => post.newFollowers !== undefined && views > 0,
+          );
+          const followerViews = withFollowers.reduce((sum, item) => sum + item.views, 0);
           const medianViews = median(items.map((item) => item.views));
           return {
             key,
@@ -221,6 +249,14 @@ export function analyzeFactors(posts: readonly Post[], options: FactorOptions): 
               ? {
                   interactionsPer1000:
                     (withInteractions.reduce((sum, item) => sum + item.value, 0) / sumViews) * 1000,
+                }
+              : {}),
+            ...(followerViews > 0
+              ? {
+                  followersPer1000:
+                    (withFollowers.reduce((sum, item) => sum + (item.post.newFollowers ?? 0), 0) /
+                      followerViews) *
+                    1000,
                 }
               : {}),
           };

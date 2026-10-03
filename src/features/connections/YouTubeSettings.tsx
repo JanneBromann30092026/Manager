@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ExternalLink, LogIn, LogOut, PlugZap, Save } from 'lucide-react';
-import { Badge, Button, Input, toast } from '@/components/ui';
+import { Badge, Button, Input, Toggle, toast } from '@/components/ui';
 import { CLIENT_ID_PATTERN } from '@/core/google/oauth';
 import { de } from '@/i18n/de';
 import { cancelSignIn, signOut, useGoogleAuth, validToken } from '@/services/google/auth';
@@ -14,6 +14,7 @@ const t = de.youtube;
 export function YouTubeSettings() {
   const clientId = useSettings((s) => s.googleClientId);
   const set = useSettings((s) => s.set);
+  const autoSync = useSettings((s) => s.youtubeAutoSync);
   const token = useGoogleAuth((s) => s.token);
   const pending = useGoogleAuth((s) => s.pending);
   const [draft, setDraft] = useState(clientId);
@@ -162,6 +163,14 @@ export function YouTubeSettings() {
         </p>
       )}
       <p className="text-sm text-fg-muted">{t.tokenNote}</p>
+      <div data-testid="youtube-auto">
+        <Toggle
+          label={t.sync.auto}
+          description={t.sync.autoHint}
+          checked={autoSync}
+          onChange={(value) => void set('youtubeAutoSync', value)}
+        />
+      </div>
     </div>
   );
 }

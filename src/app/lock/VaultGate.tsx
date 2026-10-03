@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useSettings } from '@/features/settings/settingsStore';
 import { useInstagramAutoSync } from '@/features/stats/instagramSync';
+import { useYouTubeAutoSync } from '@/features/stats/youtubeSync';
 import { useVault } from '@/services/vault';
 import { easeOut } from '@/styles/motion';
 import { Shell } from '../shell/Shell';
@@ -10,6 +11,7 @@ import { useAutoLock } from './useAutoLock';
 function UnlockedApp() {
   useAutoLock(useSettings((s) => s.lockAfterMinutes));
   useInstagramAutoSync();
+  useYouTubeAutoSync();
   return <Shell />;
 }
 

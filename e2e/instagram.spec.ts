@@ -144,7 +144,7 @@ test('fetches automatically: right after saving the token and again after 6 hour
   await expect(page.getByText('Instagram abgerufen: 1 neu, 0 aktualisiert.')).toBeVisible();
 
   await nav(page).getByRole('link', { name: 'Zahlen' }).click();
-  await expect(page.getByTestId('instagram-sync-status')).toHaveText('gerade eben abgerufen');
+  await expect(page.getByTestId('instagram-sync-status')).toContainText('gerade eben abgerufen');
   await expect(page.getByTestId('instagram-sync')).toContainText('automatisch');
   await expect(page.getByTestId('post-card')).toHaveCount(1);
   await page.getByTestId('post-card').click();
@@ -159,7 +159,7 @@ test('fetches automatically: right after saving the token and again after 6 hour
     .poll(() => calls.filter((call) => call.startsWith('/v24.0/me/media')).length)
     .toBe(before + 1);
   await nav(page).getByRole('link', { name: 'Zahlen' }).click();
-  await expect(page.getByTestId('instagram-sync-status')).toHaveText('gerade eben abgerufen');
+  await expect(page.getByTestId('instagram-sync-status')).toContainText('gerade eben abgerufen');
   await page.getByTestId('post-card').click();
   await expect(page.getByTestId('post-history')).toContainText('2 Abrufe');
   await page.keyboard.press('Escape');

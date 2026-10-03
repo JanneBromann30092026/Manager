@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react';
 import { Sparkles } from 'lucide-react';
-import { Badge, Button, Surface } from '@/components/ui';
+import { Badge, Button, SegmentedControl, Surface } from '@/components/ui';
 import { factorsPrompt } from '@/core/ai/factors';
-import { analyzeFactors, type FactorAnalysis, type FactorKey } from '@/core/factors';
+import {
+  analyzeFactors,
+  FACTOR_PLATFORMS,
+  isFactorPost,
+  type FactorAnalysis,
+  type FactorKey,
+  type FactorPlatform,
+} from '@/core/factors';
 import type { Post } from '@/data/schemas';
 import { useDataStore } from '@/data/store';
 import { HOOK_TEMPLATES } from '@/data/templates';
@@ -51,7 +58,7 @@ function factsOf(analysis: FactorAnalysis): string[] {
     ...analysis.factors.flatMap(({ factor, groups }) =>
       groups.map(
         (group) =>
-          `${t.factors[factor]} ${groupLabel(factor, group.key)}: ${group.posts} Reels, Median ${formatNumber(group.medianViews)} Aufrufe${group.interactionsPer1000 === undefined ? '' : `, ${formatNumber(group.interactionsPer1000)} Interaktionen pro 1.000 Aufrufe`}`,
+          `${t.factors[factor]} ${groupLabel(factor, group.key)}: ${group.posts} Videos, Median ${formatNumber(group.medianViews)} Aufrufe${group.interactionsPer1000 === undefined ? '' : `, ${formatNumber(group.interactionsPer1000)} Interaktionen pro 1.000 Aufrufe`}${group.followersPer1000 === undefined ? '' : `, ${formatNumber(group.followersPer1000)} neue Follower pro 1.000 Aufrufe`}`,
       ),
     ),
   ];
@@ -66,14 +73,23 @@ export function FactorsSection({ posts }: { posts: readonly Post[] }) {
   const [busy, setBusy] = useState(false);
   const [explanation, setExplanation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const available = FACTOR_PLATFORMS.filter((platform) =>
+    posts.some((post) => isFactorPost(post, platform)),
+  );
+  const [chosen, setChosen] = useState<FactorPlatform | null>(null);
+  const platform = chosen ?? available[0] ?? 'instagram';
 
   const analysis = useMemo(
     () =>
       analyzeFactors(posts, {
         now,
+        platform,
         seriesOf: (post) => (post.videoId ? videos[post.videoId]?.series : undefined),
       }),
-    [posts, videos, now],
+    [posts, videos, now, platform],
+  );
+  const showFollowers = analysis.factors.some(({ groups }) =>
+    groups.some((group) => group.followersPer1000 !== undefined),
   );
 
   const explain = async () => {
@@ -82,7 +98,7 @@ export function FactorsSection({ posts }: { posts: readonly Post[] }) {
     try {
       const answer = await generate({
         model,
-        prompt: factorsPrompt(factsOf(analysis)),
+        prompt: factorsPrompt(factsOf(analysis), t.platforms[platform]),
         maxTokens: 1_200,
       });
       setExplanation(answer.trim());
@@ -99,6 +115,18 @@ export function FactorsSection({ posts }: { posts: readonly Post[] }) {
         <h2 className="text-base font-semibold text-fg">{t.title}</h2>
         <p className="text-sm text-fg-muted">{t.intro}</p>
       </div>
+      {available.length > 1 && (
+        <SegmentedControl
+          label={t.platformLabel}
+          options={FACTOR_PLATFORMS.map((value) => ({ value, label: t.platforms[value] }))}
+          value={platform}
+          onChange={(value) => {
+            setChosen(value);
+            setExplanation(null);
+          }}
+          className="self-start"
+        />
+      )}
       {!analysis.enough ? (
         <p className="px-1 text-sm text-fg-secondary" data-testid="factors-not-enough">
           {t.notEnough(analysis.reels)}
@@ -161,6 +189,9 @@ export function FactorsSection({ posts }: { posts: readonly Post[] }) {
                         <th className="hidden py-1.5 pl-2 text-right font-medium sm:table-cell">
                           {t.interactions}
                         </th>
+                        {showFollowers && (
+                          <th className="py-1.5 pl-2 text-right font-medium">{t.followers}</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line text-fg tabular-nums">
@@ -177,6 +208,11 @@ export function FactorsSection({ posts }: { posts: readonly Post[] }) {
                           <td className="hidden py-2 pl-2 text-right sm:table-cell">
                             {formatNumber(group.interactionsPer1000)}
                           </td>
+                          {showFollowers && (
+                            <td className="py-2 pl-2 text-right">
+                              {formatNumber(group.followersPer1000)}
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>

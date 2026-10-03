@@ -7,7 +7,8 @@ import { BASELINE_STATS } from '@/data/templates';
 
 /**
  * Applies an import plan: new posts in one transaction, known values merged into existing ones.
- * API imports (fresh numbers) also update source and „Stand“ of existing posts.
+ * API imports (fresh numbers) also update source and „Stand“ of existing posts and add to the
+ * Verlauf; they never replace an existing topic.
  */
 export async function applyImport(
   plans: readonly MergePlan<Post>[],
@@ -28,8 +29,11 @@ export async function applyImport(
   for (const plan of plans) {
     if (plan.kind !== 'update') continue;
     const current = postsRepo.get(plan.target.id) ?? plan.target;
+    const patch = knownValues(plan.draft, current);
+    // Automatic fetches must not undo a topic the creator set or edited in the app.
+    if (fromApi && current.topic) delete patch.topic;
     await postsRepo.update(current.id, {
-      ...knownValues(plan.draft, current),
+      ...patch,
       ...(fromApi ? { source, measuredAt, history: history(plan.draft, current.history) } : {}),
     });
     updated += 1;
