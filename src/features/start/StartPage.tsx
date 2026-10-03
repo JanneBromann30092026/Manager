@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ArrowRight, Plus } from 'lucide-react';
-import { Badge, Button, ProgressBar, Surface } from '@/components/ui';
+import { Badge, Button, ProgressBar, Surface, cn } from '@/components/ui';
 import { Page } from '@/app/shell/Page';
 import { nextCta } from '@/core/cta';
 import { isoWeekOf, localDateOf, weekRange } from '@/core/dates';
 import { postsInLastDays, totals } from '@/core/metrics';
+import { formatMinutes, sortPlanItems, summarizePlan } from '@/core/plan';
 import { selectBrand } from '@/data/repositories';
 import type { Post } from '@/data/schemas';
 import { useDataStore } from '@/data/store';
 import { CTA_TEMPLATES, GOAL_DEFAULTS, VIDEO_STATUS_LABELS } from '@/data/templates';
 import { de } from '@/i18n/de';
+import { dayLabel, usePlan } from '@/features/plan/planData';
 import { PostRow } from '@/features/stats/PostsTab';
 import { formatDay, formatNumber, useGoal, usePosts } from '@/features/stats/statsData';
 import { VIDEO_STATUS_TONES } from '@/features/videos/videoFormat';
@@ -131,7 +133,9 @@ function MetricCard({ posts }: { posts: readonly Post[] }) {
 function ThisWeek() {
   const videosMap = useDataStore((s) => s.videos);
   const brand = useDataStore(selectBrand);
-  const range = weekRange(isoWeekOf(localDateOf()));
+  const week = isoWeekOf(localDateOf());
+  const plan = usePlan(week);
+  const range = weekRange(week);
   const videos = useMemo(
     () =>
       Object.values(videosMap)
@@ -139,6 +143,8 @@ function ThisWeek() {
         .sort((a, b) => a.date.localeCompare(b.date)),
     [videosMap, range.start, range.end],
   );
+  const items = plan ? sortPlanItems(plan.items) : [];
+  const summary = plan ? summarizePlan(plan.items, plan.budgetMinutes) : undefined;
   return (
     <Surface padding="md" className="flex flex-col gap-3" data-testid="this-week">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -149,7 +155,38 @@ function ThisWeek() {
           </span>
         </Badge>
       </div>
-      {videos.length === 0 ? (
+      {items.length > 0 ? (
+        <>
+          <ul className="flex flex-col divide-y divide-line" data-testid="start-plan">
+            {items.map((item) => (
+              <li key={item.id} className="flex min-h-12 items-center gap-3 py-2 text-sm">
+                <span className="w-24 shrink-0 text-fg-secondary">{dayLabel(item.date)}</span>
+                <span
+                  className={cn(
+                    'min-w-0 flex-1 truncate font-medium text-fg',
+                    item.done && 'text-fg-muted line-through',
+                  )}
+                >
+                  {item.title}
+                </span>
+                {item.done ? (
+                  <Badge tone="success">{de.plan.done}</Badge>
+                ) : (
+                  <span className="shrink-0 text-fg-muted tabular-nums">
+                    {de.plan.minutes(item.minutes)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {summary && (
+            <span className="text-sm text-fg-secondary">
+              {de.plan.progress(summary.done, summary.total)} ·{' '}
+              {de.plan.budgetUsed(formatMinutes(summary.used), formatMinutes(plan!.budgetMinutes))}
+            </span>
+          )}
+        </>
+      ) : videos.length === 0 ? (
         <p className="text-sm text-fg-muted">{t.thisWeekEmpty}</p>
       ) : (
         <ul className="flex flex-col divide-y divide-line">
@@ -171,13 +208,19 @@ function ThisWeek() {
       )}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
         <Link
+          to={`/plan?week=${week}`}
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-accent-fg"
+        >
+          {t.toPlan}
+          <ArrowRight size={14} aria-hidden />
+        </Link>
+        <Link
           to="/videos"
           className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-accent-fg"
         >
           {t.toVideos}
           <ArrowRight size={14} aria-hidden />
         </Link>
-        <span className="text-sm text-fg-muted">{t.planSoon}</span>
       </div>
     </Surface>
   );

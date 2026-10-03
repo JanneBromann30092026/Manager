@@ -299,6 +299,27 @@ async function startDemo(page: Page) {
   await page.getByTestId('goal-current').waitFor();
 }
 
+async function planDemo(page: Page) {
+  await page.goto(`${PREVIEW_URL}#/ideas`);
+  await page.getByRole('heading', { level: 1, name: 'Ideen' }).waitFor();
+  await ideas(page);
+  await page.goto(`${PREVIEW_URL}#/plan`);
+  await page.getByTestId('plan-week').waitFor();
+  const suggest = page.getByTestId('plan-suggest');
+  if (await suggest.isVisible()) {
+    await suggest.click();
+    await page.getByTestId('plan-item').first().waitFor();
+    await page.getByTestId('plan-item-done').first().click();
+    await page.getByText(/Vorschlag erstellt/).waitFor({ state: 'detached' });
+  }
+}
+
+async function planCalendar(page: Page) {
+  await planDemo(page);
+  await page.getByTestId('plan-calendar').click();
+  await page.getByTestId('calendar-preview').waitFor();
+}
+
 const statsTab = (name: string) => async (page: Page) => {
   await statsDemo(page);
   await page.getByRole('radio', { name }).click();
@@ -344,7 +365,7 @@ const SHOTS: Shot[] = [
   { route: '/videos', name: 'videos', prepare: videoList },
   { route: '/covers', name: 'covers', prepare: coverStudio, scroll: true },
   { route: '/stats', name: 'stats', prepare: statsDemo },
-  { route: '/plan', name: 'plan' },
+  { route: '/plan', name: 'plan', prepare: planDemo, scroll: true },
   { route: '/ideas', name: 'ideas', prepare: ideas },
   { route: '/brand', name: 'brand' },
   { route: '/settings', name: 'settings', scroll: true },
@@ -354,6 +375,7 @@ const SHOTS: Shot[] = [
   { route: '/settings', name: 'settings-password', prepare: changePassword },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
+  { route: '/plan', name: 'plan-calendar', prepare: planCalendar },
   { route: '/dev/ui', name: 'dev-ui', prepare: enableDevMode, scroll: true },
   { route: '/dev/ui', name: 'dev-vault', prepare: devVault },
   { route: '/dev/ui', name: 'dev-modal', prepare: click('Modal öffnen') },
