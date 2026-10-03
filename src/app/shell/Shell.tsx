@@ -5,6 +5,8 @@ import { Spinner } from '@/components/ui';
 import { ComingSoonPage } from '@/features/coming-soon/ComingSoonPage';
 import { BrandPage } from '@/features/brand/BrandPage';
 import { IdeasPage } from '@/features/ideas/IdeasPage';
+import { VideoPage } from '@/features/videos/VideoPage';
+import { VideosPage } from '@/features/videos/VideosPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { de } from '@/i18n/de';
 import { easeOut } from '@/styles/motion';
@@ -58,7 +60,8 @@ function AnimatedRoutes() {
           <Routes location={location}>
             <Route path="/" element={<Navigate to="/start" replace />} />
             <Route path="/start" element={<ComingSoonPage page="start" />} />
-            <Route path="/videos" element={<ComingSoonPage page="videos" />} />
+            <Route path="/videos" element={<VideosPage />} />
+            <Route path="/videos/:id" element={<VideoPage />} />
             <Route path="/covers" element={<ComingSoonPage page="covers" />} />
             <Route path="/stats" element={<ComingSoonPage page="stats" />} />
             <Route path="/plan" element={<ComingSoonPage page="plan" />} />

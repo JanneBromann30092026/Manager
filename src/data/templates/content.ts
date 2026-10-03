@@ -60,16 +60,6 @@ export const COVER_SIZES = {
 
 export const COVER_TEXT_LIMITS = { maxWords: 4, maxLines: 2, variants: 3 } as const;
 
-/** Building blocks of a video package ("Neues Video"); clips only for podcasts. */
-export const VIDEO_BLOCKS = [
-  { key: 'script', label: 'Skript' },
-  { key: 'cutList', label: 'Schnittliste (CapCut)' },
-  { key: 'cover', label: 'Cover' },
-  { key: 'caption', label: 'Caption' },
-  { key: 'communityQuestion', label: 'Kommentar' },
-  { key: 'clips', label: 'Clips (nur Podcast)' },
-] as const;
-
 /** Outline of the weekly report (JJJJ-KW). */
 export const REPORT_OUTLINE = [
   { key: 'good', label: 'Was lief gut' },

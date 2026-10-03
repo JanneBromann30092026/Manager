@@ -89,7 +89,10 @@ test('moves ideas along the status flow, starts a video and deletes', async ({ p
 
   await cards(page).first().getByRole('button').first().click();
   await page.getByRole('button', { name: 'Neues Video starten' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Videos' })).toBeVisible();
+  await expect(page.getByTestId('video-create')).toBeVisible();
+  await expect(page.getByTestId('video-topic')).toHaveValue('ETF oder Festgeld?');
+  await page.getByRole('button', { name: 'Paket anlegen' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'ETF oder Festgeld?' })).toBeVisible();
   await nav(page).getByRole('link', { name: 'Ideen' }).click();
   await expect(cards(page).first()).toContainText('Geplant');
 
