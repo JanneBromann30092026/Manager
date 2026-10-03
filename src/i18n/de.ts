@@ -611,6 +611,68 @@ export const de = {
       toSettings: 'Zu den Einstellungen',
     },
   },
+  push: {
+    title: 'Mitteilungen',
+    intro:
+      'Erinnerungen per Push: Sonntag Wochenplan, Montag Auswertung, an deinen Drehtagen Reel und Q&A. GitHub verschickt sie – mit allgemeinen Texten, ohne deine Daten.',
+    needsHomeScreen:
+      'Mitteilungen gibt es auf dem iPad und iPhone nur in der Homescreen-App: In Safari „Teilen“ → „Zum Home-Bildschirm“, dann Manager von dort öffnen.',
+    unsupported: 'Dieser Browser unterstützt keine Push-Mitteilungen.',
+    stateOn: 'Aktiv auf diesem Gerät',
+    stateOff: 'Aus',
+    stateDenied: 'Blockiert',
+    deniedHint:
+      'Mitteilungen sind blockiert. Erlaube sie in den iPad-Einstellungen → Mitteilungen → Manager.',
+    enable: 'Mitteilungen einschalten',
+    enabled:
+      'Mitteilungen auf diesem Gerät eingeschaltet. Jetzt die Einrichtung zu GitHub kopieren.',
+    disable: 'Ausschalten',
+    disableTitle: 'Mitteilungen ausschalten?',
+    disableText:
+      'Dieses Gerät bekommt dann keine Erinnerungen mehr. Lösche auf GitHub auch das Secret MANAGER_PUSH.',
+    disabled: 'Mitteilungen ausgeschaltet.',
+    sample: 'Probe anzeigen',
+    sampleShown: 'Probe angezeigt.',
+    schedule: 'Wann erinnern?',
+    scheduleHint:
+      'GitHub kennt deinen Plan nicht – stell die Tage ein, an denen du meist drehst. Mitteilungen kommen in der gewählten Stunde, je nach GitHub bis zu 30 Minuten später.',
+    kinds: {
+      weekPlan: 'Wochenplan für nächste Woche',
+      review: 'Zeit für die Auswertung',
+      qa: 'Heute: Q&A-Story',
+      reel: 'Heute: Reel drehen',
+    },
+    hour: 'Uhrzeit',
+    hourOption: (hour: number) => `${String(hour).padStart(2, '0')}:00 Uhr`,
+    weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+    weekdayNames: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
+    noDays: 'Wähle mindestens einen Tag.',
+    setup: 'Einrichtung bei GitHub',
+    setupCurrent: 'Einrichtung aktuell',
+    setupOutdated: 'Geändert – neu kopieren',
+    setupMissing: 'Noch nicht kopiert',
+    setupSteps: [
+      '„Einrichtung kopieren“ tippen.',
+      '„GitHub öffnen“ → Name MANAGER_PUSH, Inhalt einfügen, „Add secret“. Gibt es das Secret schon: dort „Update“.',
+      'Fertig. Test: „Test von GitHub“ → „Run workflow“ → grüner Knopf.',
+    ],
+    copy: 'Einrichtung kopieren',
+    copied: 'Einrichtung kopiert – jetzt bei GitHub einfügen.',
+    copyFailed: 'Kopieren hat nicht geklappt. Versuch es noch einmal.',
+    copyHint:
+      'Die Einrichtung enthält den Schlüssel für deine Mitteilungen. Füge sie nur als GitHub-Secret ein, nirgends sonst.',
+    openGithub: 'GitHub öffnen',
+    testGithub: 'Test von GitHub',
+    changedHint:
+      'Nach jeder Änderung der Zeiten die Einrichtung neu kopieren und das Secret aktualisieren.',
+    errors: {
+      unsupported: 'Dieses Gerät unterstützt hier keine Push-Mitteilungen.',
+      denied: 'Mitteilungen wurden nicht erlaubt.',
+      noWorker: 'Die App ist noch nicht offline-bereit. Lade sie neu und versuch es noch einmal.',
+      subscribe: 'Anmelden für Mitteilungen ist fehlgeschlagen. Bist du online?',
+      noKeys: 'Schalte die Mitteilungen zuerst ein.',
+    },
+  },
   instagram: {
     title: 'Instagram',
     intro:

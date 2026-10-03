@@ -36,9 +36,24 @@ function useThemeSync() {
   useEffect(() => applyReduceMotion(reduceMotion), [reduceMotion]);
 }
 
+/** A tapped push notification asks the open app to switch the page (see public/push-sw.js). */
+function usePushNavigation() {
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const onMessage = (event: MessageEvent<unknown>) => {
+      const data = event.data as { type?: unknown; hash?: unknown } | null;
+      if (data?.type !== 'manager:navigate' || typeof data.hash !== 'string') return;
+      if (/^#\/[a-z]+$/.test(data.hash)) window.location.hash = data.hash;
+    };
+    navigator.serviceWorker.addEventListener('message', onMessage);
+    return () => navigator.serviceWorker.removeEventListener('message', onMessage);
+  }, []);
+}
+
 export function App() {
   useStartup();
   useThemeSync();
+  usePushNavigation();
   const reduceMotion = useSettings((s) => s.reduceMotion);
 
   return (

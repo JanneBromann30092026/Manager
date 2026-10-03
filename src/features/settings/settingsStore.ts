@@ -3,9 +3,10 @@ import { create } from 'zustand';
 import { DEFAULT_AI_MODEL, MODEL_ID_PATTERN } from '@/core/ai/models';
 import { CLIENT_ID_PATTERN, DEFAULT_GOOGLE_CLIENT_ID } from '@/core/google/oauth';
 import { DEFAULT_LOCK_AFTER_MINUTES, LOCK_AFTER_MINUTES } from '@/core/lock';
+import { pushScheduleSchema } from '@/core/push';
 import { PLAN_ITEM_KINDS } from '@/data/domain';
 import { settingsRepo } from '@/data/repositories';
-import { PLAN_BUDGET_MINUTES, PLAN_DEFAULT_MINUTES } from '@/data/templates';
+import { PLAN_BUDGET_MINUTES, PLAN_DEFAULT_MINUTES, PUSH_DEFAULT_SCHEDULE } from '@/data/templates';
 
 export const THEME_PREFERENCES = ['system', 'light', 'dark'] as const;
 export type ThemePreference = (typeof THEME_PREFERENCES)[number];
@@ -47,6 +48,9 @@ const schemas = {
       [K in (typeof PLAN_ITEM_KINDS)[number]]: z.ZodInt;
     },
   ),
+  // Push reminders: schedule (technical) and a hash of the last copied GitHub secret
+  pushSchedule: pushScheduleSchema,
+  pushCopied: z.union([z.literal(''), z.string().regex(/^[0-9a-f]{16}$/)]),
   // Developer
   devMode: z.boolean(),
 };
@@ -64,6 +68,8 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
   planBudget: PLAN_BUDGET_MINUTES,
   planDurations: PLAN_DEFAULT_MINUTES,
+  pushSchedule: PUSH_DEFAULT_SCHEDULE,
+  pushCopied: '',
   devMode: false,
 };
 

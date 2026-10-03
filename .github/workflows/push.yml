@@ -1,0 +1,47 @@
+name: Push-Mitteilungen
+
+# Sends the reminders configured in the app (secret MANAGER_PUSH). GitHub starts scheduled runs
+# in UTC and often a few minutes late; the script checks weekday and hour in Europe/Berlin.
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Testmitteilung senden'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  # Re-enables this workflow so GitHub does not switch it off after 60 days without commits.
+  actions: write
+
+concurrency:
+  group: push
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Mitteilungen senden
+        run: node --experimental-strip-types --no-warnings=ExperimentalWarning scripts/send-push.ts
+        env:
+          MANAGER_PUSH: ${{ secrets.MANAGER_PUSH }}
+          PUSH_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.test && 'test' || 'schedule' }}
+      - name: Zeitplan aktiv halten
+        if: github.event_name == 'schedule' && github.event.schedule == '7 * * * *'
+        run: |
+          if [ "$(TZ=Europe/Berlin date +%u%H)" = "103" ]; then
+            gh api -X PUT "repos/${{ github.repository }}/actions/workflows/push.yml/enable"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
