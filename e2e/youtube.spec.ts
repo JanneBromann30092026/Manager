@@ -108,7 +108,9 @@ async function mockYouTube(context: BrowserContext, analytics: 'ok' | 'off' = 'o
 
 async function saveClientId(page: Page) {
   const section = page.getByTestId('youtube-settings');
-  await expect(section.getByTestId('youtube-sign-in')).toBeDisabled();
+  await expect(page.getByTestId('youtube-client-id')).toHaveValue(
+    /\.apps\.googleusercontent\.com$/,
+  );
   await page.getByTestId('youtube-client-id').fill('GOCSPX-das-ist-ein-secret');
   await page.getByTestId('youtube-client-id-save').click();
   await expect(section.getByText('Das ist keine Client-ID')).toBeVisible();
