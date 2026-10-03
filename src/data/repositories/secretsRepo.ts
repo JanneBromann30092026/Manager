@@ -9,7 +9,7 @@ import { decryptJson, encryptJson } from '@/services/crypto/webCrypto';
 import { nextTimestamp } from '@/core/time';
 import { db } from '../db';
 
-export const SECRET_KEYS = ['anthropicApiKey', 'instagramToken'] as const;
+export const SECRET_KEYS = ['anthropicApiKey', 'instagramToken', 'pushKeys'] as const;
 export type SecretKey = (typeof SECRET_KEYS)[number];
 
 const valueSchema = z.string().min(1).max(10_000);

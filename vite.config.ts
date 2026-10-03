@@ -127,6 +127,8 @@ export default defineConfig({
         // iOS loads the startup images itself when the app is added to the home screen.
         globIgnores: ['splash/**'],
         navigateFallback: `${BASE}index.html`,
+        // Push reminders (step 11): push + notificationclick handlers.
+        importScripts: ['push-sw.js'],
         cleanupOutdatedCaches: true,
       },
     }),

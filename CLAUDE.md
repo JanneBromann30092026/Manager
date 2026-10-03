@@ -142,7 +142,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
 - [x] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
 - [x] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
-- [ ] 11 Push-Mitteilungen
+- [x] 11 Push-Mitteilungen
 - [ ] 12 Backups, Export & Feinschliff
 
 ## Entscheidungen & Notizen
@@ -317,3 +317,19 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Gemeinsamer Abgleich `core/apiImport.ts` (`planApiImport`, auch für YouTube): Plattform-ID,
     sonst Tag + Thema, sonst der einzige Beitrag des Tages ohne ID. Thema = erste Caption-Zeile ohne
     Hashtags. CSP connect-src + graph.instagram.com.
+- Schritt 11 (Push):
+  - Cockpit hatte noch keinen Push-Schritt → eigener Aufbau. Kein Server: Die App erzeugt das
+    VAPID-Schlüsselpaar (Web Crypto, P-256; privater Schlüssel als verschlüsseltes Secret
+    `pushKeys`), abonniert das Gerät und kopiert **eine Einrichtung** (JSON: Abo, Schlüssel,
+    Zeitplan, Texte) in die Zwischenablage → GitHub-Secret `MANAGER_PUSH`. Der Schlüssel wird nie
+    angezeigt. Einstellung `pushCopied` = Hash aus Abo + Zeitplan → „Geändert – neu kopieren“.
+  - Zeitplan `pushSchedule` (Wochenplan So 18, Auswertung Mo 9, Q&A Mi 9, Reel Di/Do 9 – aus
+    PLAN_SLOTS), nur volle Stunden, Europe/Berlin. GitHub kennt den Plan nicht: „an geplanten
+    Tagen“ = eingestellte Wochentage. Texte allgemein in `templates/push.ts`.
+  - Versand `.github/workflows/push.yml` stündlich (Minute 7) + manuell „Testmitteilung“;
+    `scripts/send-push.ts` (web-push nur im Skript) nutzt `core/push.ts` (`dueKinds`,
+    `zonedParts`). 404/410 → Job rot („Abo neu einrichten“). Gegen die 60-Tage-Abschaltung
+    aktiviert der Job sich montags 3 Uhr selbst neu (`actions: write`).
+  - Service Worker: `public/push-sw.js` per Workbox `importScripts`; Tipp auf die Mitteilung
+    fokussiert die offene App und wechselt per postMessage die Seite (kein Neuladen → keine Sperre).
+  - E2E: Push-Dienst, Erlaubnis und Zwischenablage per `e2e/pushMock.ts` gefälscht.

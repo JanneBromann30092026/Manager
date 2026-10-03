@@ -5,6 +5,7 @@
 import { mkdirSync } from 'node:fs';
 import { chromium, type BrowserContextOptions, type Page } from '@playwright/test';
 import { preview } from 'vite';
+import { DEMO_PUSH_ENDPOINT, installPushMock } from './pushMock.ts';
 import {
   IPAD_LANDSCAPE,
   IPAD_PORTRAIT,
@@ -180,6 +181,18 @@ async function settingsInstagram(page: Page) {
     element.scrollIntoView({ block: 'start' });
   });
   await page.getByTestId('settings-instagram').locator('summary').click();
+}
+
+/** Push with faked permission/subscription (no push service in the container). */
+async function settingsPush(page: Page) {
+  await page.evaluate(installPushMock, DEMO_PUSH_ENDPOINT);
+  await page.getByTestId('push-enable').click();
+  await page.getByTestId('push-copy').click();
+  await page.getByTestId('push-setup-state').filter({ hasText: 'Einrichtung aktuell' }).waitFor();
+  await page.waitForTimeout(3600); // let the toasts disappear
+  await page.getByTestId('settings-push').evaluate((element) => {
+    element.scrollIntoView({ block: 'start' });
+  });
 }
 
 async function changePassword(page: Page) {
@@ -395,6 +408,7 @@ const SHOTS: Shot[] = [
   { route: '/settings', name: 'settings-password', prepare: changePassword },
   { route: '/settings', name: 'settings-youtube', prepare: settingsYouTube },
   { route: '/settings', name: 'settings-instagram', prepare: settingsInstagram },
+  { route: '/settings', name: 'settings-push', prepare: settingsPush },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
   { route: '/plan', name: 'plan-calendar', prepare: planCalendar },
