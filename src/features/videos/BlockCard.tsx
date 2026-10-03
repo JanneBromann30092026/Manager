@@ -153,10 +153,7 @@ export function BlockCard({
               variant="ghost"
               size="sm"
               icon={Image}
-              onClick={() => {
-                toast.info(t.coverStudioSoon);
-                void navigate('/covers');
-              }}
+              onClick={() => void navigate(`/covers?video=${video.id}`)}
             >
               {t.openCoverStudio}
             </Button>

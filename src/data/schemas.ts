@@ -98,6 +98,8 @@ const videoFields = {
     })
     .prefault({}),
   coverFileIds: z.array(id).max(LIMITS.coverFiles).default([]),
+  /** Cover pose chosen in the cover studio; empty = automatic from text and hook (step 6). */
+  coverPose: z.enum(POSE_MOODS).optional(),
   /** Blocks whose current text was written by Claude (shown as "(Claude)" drafts). */
   aiBlocks: z.array(z.enum(VIDEO_BLOCK_KEYS)).max(VIDEO_BLOCK_KEYS.length).default([]),
   /** Status changes, oldest first. */
