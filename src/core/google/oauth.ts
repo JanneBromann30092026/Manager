@@ -13,7 +13,8 @@ export const YOUTUBE_SCOPES = [
 ] as const;
 
 /** OAuth client id of the Manager project (public, may be in the code; never a secret). */
-export const DEFAULT_GOOGLE_CLIENT_ID = '';
+export const DEFAULT_GOOGLE_CLIENT_ID =
+  '435425521293-m9kr2n2kdb4n88m7pkugdhd8nfdk26ro.apps.googleusercontent.com';
 
 export const CLIENT_ID_PATTERN = /^[\w-]+\.apps\.googleusercontent\.com$/;
 
