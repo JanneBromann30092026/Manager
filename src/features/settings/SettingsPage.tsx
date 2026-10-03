@@ -7,6 +7,7 @@ import { useShortcutsHelp } from '@/app/shortcuts/shortcutsStore';
 import { Page } from '@/app/shell/Page';
 import { de } from '@/i18n/de';
 import { vault } from '@/services/vault';
+import { YouTubeSettings } from '@/features/connections/YouTubeSettings';
 import { AiSettings } from './AiSettings';
 import { SecuritySettings } from './SecuritySettings';
 import { THEME_PREFERENCES, useSettings } from './settingsStore';
@@ -102,6 +103,10 @@ export function SettingsPage() {
 
         <Section title={t.ai.title} testId="settings-ai">
           <AiSettings />
+        </Section>
+
+        <Section title={de.youtube.title} testId="settings-youtube">
+          <YouTubeSettings />
         </Section>
 
         <Section title={t.storage.title} testId="settings-storage">

@@ -140,7 +140,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
 - [x] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
 - [x] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
-- [ ] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
+- [x] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
 - [ ] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
 - [ ] 11 Push-Mitteilungen
 - [ ] 12 Backups, Export & Feinschliff
@@ -284,3 +284,20 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Kalender: `core/ics.ts` (aus Kompass, PRODID Manager, UID `<id>@manager`), ganztägig,
     Erinnerung 9 Uhr am Tag, nur offene Aufgaben; Teilen oder Datei sichern.
   - Start-Dashboard zeigt die Aufgaben der laufenden Woche; Platzhalterseite (coming-soon) entfernt.
+- Schritt 9 (YouTube):
+  - Anmeldung ohne Server: OAuth-Token-Flow (`response_type=token`, kein Secret, kein
+    Refresh-Token) über `public/oauth.html` + `oauth.js` (eigene CSP, kein Inline-Skript). Zwei Wege,
+    weil iPad-Homescreen-Apps Popups unterschiedlich behandeln: **Fenster** (Token per
+    BroadcastChannel/opener zurück) und **Weiterleitung** (Ergebnis kurz in sessionStorage, App lädt
+    neu, nach dem Entsperren übernommen und sofort gelöscht). `state` = Modus + Zufall, wird geprüft.
+  - Token nur im Arbeitsspeicher (`useGoogleAuth`), 1 h gültig, beim Sperren gelöscht. Beide Scopes
+    (youtube.readonly, yt-analytics.readonly) Pflicht. Client-ID als Einstellung `googleClientId`
+    (öffentlich, Vorgabe `DEFAULT_GOOGLE_CLIENT_ID` in core/google/oauth.ts).
+  - Abruf `services/youtube.ts`: Kanal (Abonnenten → `accountStats` Plattform youtube), Uploads
+    (max. 100), Videos (Aufrufe, Likes, Kommentare, Länge), Analytics je Video
+    (averageViewDuration, subscribersGained → neue Follower). Fällt Analytics aus, bleiben diese Werte
+    leer. Shorts = ≤ 180 s oder „#shorts“. Mapping/Abgleich rein in `core/youtube.ts`.
+  - Beitrag hat zusätzlich `externalId` (YouTube-Video-ID, keine Migration); Abgleich per ID, sonst
+    Tag + Titel. API-Import setzt Quelle „YouTube API“ und neuen Stand.
+  - CSP connect-src + www.googleapis.com, youtubeanalytics.googleapis.com. Zielkarte und Follower-
+    Karte zählen nur die Ziel-Plattform (Instagram).

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Manager – Anmeldung</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        font-family: -apple-system, system-ui, sans-serif;
+        background: #f3f5f9;
+        color: #0f172a;
+        text-align: center;
+        padding: 24px;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #090d16;
+          color: #e2e8f0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p id="message">Anmeldung wird übergeben …</p>
+    <script src="oauth.js"></script>
+  </body>
+</html>

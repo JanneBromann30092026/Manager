@@ -154,6 +154,8 @@ const postFields = {
   topic: optionalText(LIMITS.title),
   hookType: z.enum(HOOK_TYPES).optional(),
   videoId: id.optional(),
+  /** Id on the platform (YouTube video id), set by the API import (step 9). */
+  externalId: optionalText(100),
   /** When the numbers were read ("Stand"); early numbers (< 24 h) are marked as too early. */
   measuredAt: timestamp,
   source: z.enum(VALUE_SOURCES).default('manual'),

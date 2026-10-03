@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { create } from 'zustand';
 import { DEFAULT_AI_MODEL, MODEL_ID_PATTERN } from '@/core/ai/models';
+import { CLIENT_ID_PATTERN, DEFAULT_GOOGLE_CLIENT_ID } from '@/core/google/oauth';
 import { DEFAULT_LOCK_AFTER_MINUTES, LOCK_AFTER_MINUTES } from '@/core/lock';
 import { PLAN_ITEM_KINDS } from '@/data/domain';
 import { settingsRepo } from '@/data/repositories';
@@ -26,6 +27,8 @@ const schemas = {
   // Optional AI (off by default; the key itself is an encrypted secret)
   aiEnabled: z.boolean(),
   aiModel: z.string().regex(MODEL_ID_PATTERN),
+  // YouTube: OAuth client id (public, no secret)
+  googleClientId: z.union([z.literal(''), z.string().regex(CLIENT_ID_PATTERN)]),
   // Weekly plan: time budget and time per task (templates, editable)
   planBudget: z
     .int()
@@ -58,6 +61,7 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   lockAfterMinutes: DEFAULT_LOCK_AFTER_MINUTES,
   aiEnabled: false,
   aiModel: DEFAULT_AI_MODEL,
+  googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
   planBudget: PLAN_BUDGET_MINUTES,
   planDurations: PLAN_DEFAULT_MINUTES,
   devMode: false,
