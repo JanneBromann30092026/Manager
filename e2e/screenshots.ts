@@ -195,6 +195,12 @@ async function settingsPush(page: Page) {
   });
 }
 
+async function settingsBackup(page: Page) {
+  await page.getByTestId('settings-backup').evaluate((element) => {
+    element.scrollIntoView({ block: 'start' });
+  });
+}
+
 async function changePassword(page: Page) {
   await page.getByRole('button', { name: 'Passwort ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Passwort ändern' });
@@ -409,6 +415,7 @@ const SHOTS: Shot[] = [
   { route: '/settings', name: 'settings-youtube', prepare: settingsYouTube },
   { route: '/settings', name: 'settings-instagram', prepare: settingsInstagram },
   { route: '/settings', name: 'settings-push', prepare: settingsPush },
+  { route: '/settings', name: 'settings-backup', prepare: settingsBackup },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
   { route: '/plan', name: 'plan-calendar', prepare: planCalendar },

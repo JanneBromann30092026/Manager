@@ -143,7 +143,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
 - [x] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
 - [x] 11 Push-Mitteilungen
-- [ ] 12 Backups, Export & Feinschliff
+- [x] 12 Backups, Export & Feinschliff
 
 ## Entscheidungen & Notizen
 - Entstehung: Claude-Projekt „Manager“ (Befehle „Neues Video“, „Auswertung“, „Wochenplan“) wird
@@ -333,3 +333,19 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Service Worker: `public/push-sw.js` per Workbox `importScripts`; Tipp auf die Mitteilung
     fokussiert die offene App und wechselt per postMessage die Seite (kein Neuladen → keine Sperre).
   - E2E: Push-Dienst, Erlaubnis und Zwischenablage per `e2e/pushMock.ts` gefälscht.
+- Schritt 12 (Backup, Export, Feinschliff):
+  - Kompass/Cockpit hatten noch kein Backup → eigener Aufbau. Datei `manager-backup-JJJJ-MM-TT.json`:
+    Hülle (`core/backup.ts`: Format, Version, PBKDF2-Parameter mit neuem Salt, IV, gzip) + AES-GCM-
+    Ciphertext (AAD `manager-backup:v1`). Inhalt: alle Datentabellen, Dateien (Fotos, Schrift) und
+    technische Einstellungen (`BACKUP_SETTING_KEYS`) – **nie** Secrets (API-Key, Instagram-Token,
+    Push-Schlüssel). Verschlüsselt mit dem App-Passwort (vorher geprüft: `vault.verifyPassword`).
+  - Sichern in zwei Tipps (Verschlüsseln, dann „Verschlüsseln und sichern“ → Share-Sheet), weil
+    iPadOS das Teilen nur direkt nach einem Tipp öffnet. `lastBackupAt` (Einstellung) erst nach dem
+    Sichern; Erinnerung auf „Start“ bei Daten ohne Backup oder nach 14 Tagen.
+  - Einspielen ersetzt alle Daten (eine Transaktion, mit dem aktuellen Schlüssel neu verschlüsselt);
+    Vorschau mit Anzahl je Bereich, beschädigte Einträge werden ausgelassen. Neuere Formatversion →
+    Hinweis „App aktualisieren“.
+  - CSV-Export (`core/csvExport.ts`): Beiträge und Followerstände, `;`, Dezimalkomma, BOM,
+    Formel-Schutz; Spaltennamen so, dass der CSV-Import sie wieder erkennt.
+  - Einstellungen: Abschnitte „Backup & Export“ und „Installation“ (Status Homescreen-App, Schritte,
+    Hinweis: Browser-Tab und Homescreen-App haben getrennte Daten → per Backup umziehen).

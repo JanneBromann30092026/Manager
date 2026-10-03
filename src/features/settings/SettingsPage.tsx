@@ -10,6 +10,8 @@ import { vault } from '@/services/vault';
 import { InstagramSettings } from '@/features/connections/InstagramSettings';
 import { YouTubeSettings } from '@/features/connections/YouTubeSettings';
 import { AiSettings } from './AiSettings';
+import { BackupSettings } from './BackupSettings';
+import { InstallSettings } from './InstallSettings';
 import { PushSettings } from './PushSettings';
 import { SecuritySettings } from './SecuritySettings';
 import { THEME_PREFERENCES, useSettings } from './settingsStore';
@@ -117,6 +119,14 @@ export function SettingsPage() {
 
         <Section title={de.push.title} testId="settings-push">
           <PushSettings />
+        </Section>
+
+        <Section title={de.backup.title} testId="settings-backup">
+          <BackupSettings />
+        </Section>
+
+        <Section title={de.install.title} testId="settings-install">
+          <InstallSettings />
         </Section>
 
         <Section title={t.storage.title} testId="settings-storage">

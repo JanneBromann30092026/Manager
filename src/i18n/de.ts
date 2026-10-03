@@ -611,6 +611,83 @@ export const de = {
       toSettings: 'Zu den Einstellungen',
     },
   },
+  backup: {
+    title: 'Backup & Export',
+    intro:
+      'Deine Daten liegen nur auf diesem Gerät. Sichere sie regelmäßig als verschlüsselte Datei in „Dateien“ (iCloud Drive).',
+    never: 'Noch kein Backup',
+    last: (date: string) => `Letztes Backup: ${date}`,
+    create: 'Backup erstellen',
+    createTitle: 'Backup erstellen',
+    createText:
+      'Die Datei wird mit deinem App-Passwort verschlüsselt. API-Key, Instagram-Token und Push-Schlüssel sind nicht enthalten.',
+    password: 'App-Passwort',
+    wrongPassword: 'Das Passwort stimmt nicht.',
+    creating: 'Verschlüssele …',
+    save: 'Verschlüsseln und sichern',
+    saved: 'Backup gesichert. Leg es in „Dateien“ ab (z. B. iCloud Drive).',
+    downloaded: 'Backup heruntergeladen.',
+    cancelled: 'Sichern abgebrochen – das Backup wurde nicht abgelegt.',
+    restore: 'Backup einspielen',
+    restoreTitle: 'Backup einspielen',
+    restoreText:
+      'Gib das App-Passwort ein, mit dem das Backup erstellt wurde. Danach siehst du, was drin ist.',
+    chooseFile: 'Datei auswählen',
+    fileLabel: (name: string) => `Datei: ${name}`,
+    check: 'Entschlüsseln',
+    checking: 'Entschlüssele …',
+    previewTitle: (date: string) => `Backup vom ${date}`,
+    counts: {
+      videos: 'Videos',
+      ideas: 'Ideen',
+      posts: 'Beiträge',
+      reports: 'Reports',
+      plans: 'Wochenpläne',
+      accountStats: 'Followerstände',
+      brand: 'Marke',
+      files: 'Dateien (Fotos, Schrift)',
+    },
+    skipped: (count: number) =>
+      count === 1
+        ? '1 Eintrag war beschädigt und wird ausgelassen.'
+        : `${count} Einträge waren beschädigt und werden ausgelassen.`,
+    replaceWarning:
+      'Achtung: Einspielen ersetzt alle Daten in dieser App. Dein App-Passwort bleibt gleich.',
+    replace: 'Alles ersetzen',
+    restored: 'Backup eingespielt.',
+    errors: {
+      wrongPassword: 'Das Passwort passt nicht zu diesem Backup.',
+      format: 'Das ist keine Manager-Backup-Datei.',
+      newer: 'Dieses Backup stammt aus einer neueren Manager-Version. Aktualisiere die App zuerst.',
+      damaged: 'Die Backup-Datei ist beschädigt.',
+      failed: 'Das hat nicht geklappt. Versuch es noch einmal.',
+    },
+    reminder: (days: number | null) =>
+      days === null
+        ? 'Du hast noch kein Backup. Sichere deine Daten einmal als Datei.'
+        : `Dein letztes Backup ist ${days} Tage alt. Zeit für ein neues.`,
+    reminderAction: 'Jetzt sichern',
+    csv: 'Zahlen als CSV',
+    csvHint: 'Für Numbers oder Excel. Lässt sich unter „Zahlen“ wieder importieren.',
+    csvPosts: 'Beiträge (CSV)',
+    csvFollowers: 'Followerstände (CSV)',
+    csvEmpty: 'Noch keine Zahlen zum Exportieren.',
+    csvSaved: 'CSV gesichert.',
+  },
+  install: {
+    title: 'Installation',
+    installed: 'Als Homescreen-App installiert',
+    notInstalled: 'Läuft im Browser',
+    intro:
+      'Als Homescreen-App startet Manager wie eine normale App, funktioniert offline, behält die Daten dauerhaft und kann Mitteilungen schicken.',
+    steps: [
+      'Öffne Manager in Safari.',
+      'Tippe auf „Teilen“ (Quadrat mit Pfeil nach oben).',
+      'Wähle „Zum Home-Bildschirm“ und tippe „Hinzufügen“.',
+      'Öffne Manager ab jetzt immer über das Symbol auf dem Home-Bildschirm.',
+    ],
+    note: 'Die Daten im Browser-Tab und in der Homescreen-App sind getrennt. Daten mitnehmen: Backup erstellen und in der App einspielen.',
+  },
   push: {
     title: 'Mitteilungen',
     intro:
