@@ -12,6 +12,7 @@ import {
 } from '@/components/ui';
 import { parseNumber, type PostDraft } from '@/core/csvImport';
 import { localDateOf } from '@/core/dates';
+import { MILESTONE_HOURS, valueAtAge } from '@/core/postHistory';
 import { FORMATS, HOOK_TYPES, PLATFORMS, type ValueSource } from '@/data/domain';
 import { postsRepo } from '@/data/repositories';
 import type { Post, PostInput } from '@/data/schemas';
@@ -25,7 +26,7 @@ import {
   VALUE_SOURCE_LABELS,
 } from '@/data/templates';
 import { de } from '@/i18n/de';
-import { formatDay } from './statsData';
+import { formatDay, formatNumber } from './statsData';
 
 const t = de.stats;
 const f = t.form;
@@ -315,6 +316,7 @@ function Form({
           {NUMBER_FIELDS.map(({ key }) => numberInput(key, f[key]))}
         </div>
       </fieldset>
+      {post && <PostHistory post={post} />}
       <details
         className="rounded-xl bg-surface-sunken p-4"
         open={RETENTION_FIELDS.some(({ key }) => draft.values[key]) || undefined}
@@ -369,6 +371,40 @@ function Form({
         />
       )}
     </form>
+  );
+}
+
+/** Views 1, 3 and 7 days after publishing (from the automatic fetches). */
+function PostHistory({ post }: { post: Post }) {
+  const th = t.history;
+  if (!post.publishedAt || post.history.length === 0) return null;
+  const publishedAt = post.publishedAt;
+  const cells = [
+    ...MILESTONE_HOURS.map((hours) => ({
+      label: th.day(hours / 24),
+      value: valueAtAge(post.history, publishedAt, hours),
+    })),
+    { label: th.now, value: post.history.at(-1)?.views },
+  ];
+  return (
+    <section className="flex flex-col gap-2" data-testid="post-history">
+      <div className="flex flex-col px-1">
+        <span className="text-base font-semibold text-fg">{th.title}</span>
+        <span className="text-sm text-fg-muted">
+          {th.hint} {th.fetches(post.history.length)}
+        </span>
+      </div>
+      <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {cells.map((cell) => (
+          <div key={cell.label} className="rounded-lg bg-surface-sunken px-3 py-2">
+            <dt className="text-sm text-fg-secondary">{cell.label}</dt>
+            <dd className="text-base font-semibold text-fg tabular-nums">
+              {formatNumber(cell.value)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 

@@ -332,6 +332,78 @@ async function statsDemo(page: Page) {
   }
 }
 
+/** Invented Instagram account with 10 demo reels (never real statistics), relative to today. */
+async function instagramDemo(page: Page) {
+  const reels = [
+    { days: 2, hour: 19, views: 2100, tags: 2, caption: 'So teile ich mein Gehalt auf' },
+    { days: 4, hour: 12, views: 640, tags: 6, caption: 'ETF oder Tagesgeld?' },
+    { days: 6, hour: 19, views: 1850, tags: 1, caption: 'Mein erstes Depot – 3 Fehler' },
+    { days: 8, hour: 8, views: 520, tags: 8, caption: 'Was ist eine Haftpflicht?' },
+    { days: 9, hour: 18, views: 1600, tags: 2, caption: 'Notgroschen: wie viel?' },
+    { days: 11, hour: 13, views: 700, tags: 5, caption: 'Inflation einfach erklärt' },
+    { days: 13, hour: 20, views: 1420, tags: 3, caption: 'Q&A: eure Geldfragen' },
+    { days: 15, hour: 9, views: 560, tags: 7, caption: 'Sparplan in 5 Minuten' },
+    { days: 17, hour: 19, views: 1250, tags: 0, caption: 'Mein Budget im Oktober' },
+    { days: 19, hour: 12, views: 610, tags: 4, caption: 'Kreditkarte für Studis?' },
+  ].map((reel, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - reel.days);
+    date.setHours(reel.hour, 5, 0, 0);
+    return {
+      ...reel,
+      id: String(7000 + index),
+      timestamp: date.toISOString().replace('Z', '+0000'),
+      text: `${reel.caption}${' #finanzen'.repeat(reel.tags)}`,
+    };
+  });
+  await page.route('https://graph.instagram.com/**', (route) => {
+    const url = new URL(route.request().url());
+    const body = (data: unknown) =>
+      route.fulfill({
+        headers: { 'access-control-allow-origin': '*', 'content-type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    if (url.pathname.endsWith('/me'))
+      return body({ user_id: '1', username: 'demo.finanz', followers_count: 171 });
+    if (url.pathname.endsWith('/me/media'))
+      return body({
+        data: reels.map((reel) => ({
+          id: reel.id,
+          caption: reel.text,
+          media_type: 'VIDEO',
+          media_product_type: 'REELS',
+          timestamp: reel.timestamp,
+        })),
+      });
+    const reel = reels.find((item) => url.pathname.endsWith(`/${item.id}/insights`));
+    if (reel)
+      return body({
+        data: [
+          { name: 'views', values: [{ value: reel.views }] },
+          { name: 'reach', values: [{ value: Math.round(reel.views * 0.8) }] },
+          { name: 'likes', values: [{ value: Math.round(reel.views / 25) }] },
+          { name: 'comments', values: [{ value: Math.round(reel.views / 200) }] },
+          { name: 'shares', values: [{ value: Math.round(reel.views / 120) }] },
+          { name: 'saved', values: [{ value: Math.round(reel.views / 60) }] },
+          { name: 'ig_reels_avg_watch_time', values: [{ value: reel.views > 1000 ? 8400 : 4600 }] },
+        ],
+      });
+    return route.fulfill({ status: 400, body: '{}' });
+  });
+  await page.goto(`${PREVIEW_URL}#/settings`);
+  await page.getByTestId('instagram-state').waitFor();
+  const token = page.getByTestId('instagram-token');
+  if (await token.isVisible()) {
+    await token.fill(`IGAAdemo${'x'.repeat(40)}`);
+    await page.getByTestId('instagram-token-save').click();
+    await page.getByText(/Instagram abgerufen/).waitFor();
+  }
+  await page.goto(`${PREVIEW_URL}#/stats?tab=insights`);
+  await page.getByTestId('factors-findings').waitFor();
+  await page.getByTestId('factors').locator('summary').click();
+  await page.waitForTimeout(3600); // let the toasts disappear
+}
+
 async function startDemo(page: Page) {
   await statsDemo(page);
   await page.goto(`${PREVIEW_URL}#/start`);
@@ -418,6 +490,7 @@ const SHOTS: Shot[] = [
   { route: '/settings', name: 'settings-backup', prepare: settingsBackup },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
+  { route: '/stats', name: 'stats-factors', prepare: instagramDemo, scroll: true },
   { route: '/plan', name: 'plan-calendar', prepare: planCalendar },
   { route: '/dev/ui', name: 'dev-ui', prepare: enableDevMode, scroll: true },
   { route: '/dev/ui', name: 'dev-vault', prepare: devVault },

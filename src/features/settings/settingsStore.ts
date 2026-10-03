@@ -30,6 +30,9 @@ const schemas = {
   aiModel: z.string().regex(MODEL_ID_PATTERN),
   // YouTube: OAuth client id (public, no secret)
   googleClientId: z.union([z.literal(''), z.string().regex(CLIENT_ID_PATTERN)]),
+  // Instagram: fetch reels automatically when the app opens; time of the last fetch
+  instagramAutoSync: z.boolean(),
+  instagramSyncedAt: z.union([z.literal(''), z.iso.datetime()]),
   // Weekly plan: time budget and time per task (templates, editable)
   planBudget: z
     .int()
@@ -68,6 +71,8 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   aiEnabled: false,
   aiModel: DEFAULT_AI_MODEL,
   googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
+  instagramAutoSync: true,
+  instagramSyncedAt: '',
   planBudget: PLAN_BUDGET_MINUTES,
   planDurations: PLAN_DEFAULT_MINUTES,
   pushSchedule: PUSH_DEFAULT_SCHEDULE,

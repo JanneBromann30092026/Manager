@@ -349,3 +349,18 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     Formel-Schutz; Spaltennamen so, dass der CSV-Import sie wieder erkennt.
   - Einstellungen: Abschnitte „Backup & Export“ und „Installation“ (Status Homescreen-App, Schritte,
     Hinweis: Browser-Tab und Homescreen-App haben getrennte Daten → per Backup umziehen).
+- Nach Schritt 12 – Instagram automatisch & Einflussfaktoren (03.10.2026):
+  - Automatischer Abruf (`features/stats/instagramSync.ts`): beim Entsperren, bei Rückkehr in den
+    Vordergrund und alle 15 Min. geprüft, fällig nach 6 Std. (`isSyncDue`), nach Fehler 30 Min.
+    Pause; nur bei geöffneter App (kein Server). Einstellungen `instagramAutoSync` (Standard an,
+    im Backup) und `instagramSyncedAt`. Direkt nach dem Speichern des Tokens erster Abruf.
+    Status + „Jetzt abrufen“ oben in „Zahlen“.
+  - Beitrag hat zusätzlich `publishedAt`, `reach`, `captionLength`, `hashtagCount` (Caption selbst
+    wird nicht gespeichert) und `history` (Werte je API-Abruf, max. 60, Abrufe < 1 Std. ersetzen
+    den letzten, ausgedünnt nach kleinstem Abstand); Felder mit Default, keine Migration.
+    `core/postHistory.ts`: Werte nach 1/3/7 Tagen nur aus einem Abruf bei 75–150 % des Alters.
+  - Einflussfaktoren `core/factors.ts` (nur Instagram-Reels ≥ 48 h, ab 4 Reels): Median-Aufrufe je
+    Gruppe vs. Median aller (Wert nach 7 Tagen, sonst aktueller); Wochentag, Uhrzeit, Hook-Typ,
+    Serie, Caption-Länge, Hashtags, Ø Wiedergabezeit, Abstand zum Reel davor. Auffällig ab +25 %/
+    −20 % und ≥ 2 Reels; „unsicher“ unter 3 Reels je Gruppe oder 8 insgesamt. Optional „Mit Claude
+    erklären“ (`core/ai/factors.ts`, nur Zahlen der Auswertung).

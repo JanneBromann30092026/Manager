@@ -1,5 +1,5 @@
 import { expect, test, type BrowserContext, type Route } from '@playwright/test';
-import { nav, openApp } from './vault.ts';
+import { nav, openApp, reloadAndUnlock } from './vault.ts';
 
 /** Invented token – Instagram is always mocked, no real account. */
 const TOKEN = `IGAAdemo${'x'.repeat(40)}`;
@@ -76,6 +76,8 @@ test('token is checked, stored encrypted, refreshed on fetch; reels land in „Z
   await openApp(page, '/settings');
   const section = page.getByTestId('instagram-settings');
   await expect(section.getByTestId('instagram-state')).toHaveText('Kein Token gespeichert');
+  // Manual fetch in this test; the automatic one has its own test.
+  await page.getByTestId('instagram-auto').getByRole('switch').click();
   await page.getByTestId('instagram-token').fill('EAAB-facebook-token');
   await page.getByTestId('instagram-token-save').click();
   await expect(section.getByText('Das sieht nicht nach einem Instagram-Token aus')).toBeVisible();
@@ -124,4 +126,56 @@ test('an invalid token is reported and not stored', async ({ page, context }) =>
   await page.getByTestId('instagram-token-save').click();
   await expect(page.getByText('Der Token ist ungültig oder abgelaufen.')).toBeVisible();
   await expect(page.getByTestId('instagram-state')).toHaveText('Kein Token gespeichert');
+});
+
+test('fetches automatically: right after saving the token and again after 6 hours', async ({
+  page,
+  context,
+}) => {
+  const calls = await mockInstagram(context);
+  await page.clock.setFixedTime(new Date('2026-10-03T10:00:00'));
+  await openApp(page, '/settings');
+  await expect(page.getByTestId('instagram-auto').getByRole('switch')).toHaveAttribute(
+    'aria-checked',
+    'true',
+  );
+  await page.getByTestId('instagram-token').fill(TOKEN);
+  await page.getByTestId('instagram-token-save').click();
+  await expect(page.getByText('Instagram abgerufen: 1 neu, 0 aktualisiert.')).toBeVisible();
+
+  await nav(page).getByRole('link', { name: 'Zahlen' }).click();
+  await expect(page.getByTestId('instagram-sync-status')).toHaveText('gerade eben abgerufen');
+  await expect(page.getByTestId('instagram-sync')).toContainText('automatisch');
+  await expect(page.getByTestId('post-card')).toHaveCount(1);
+  await page.getByTestId('post-card').click();
+  await expect(page.getByTestId('post-history')).toContainText('1 Abruf');
+  await page.keyboard.press('Escape');
+
+  // Opening the app 7 hours later fetches again (new snapshot in the Verlauf).
+  const before = calls.filter((call) => call.startsWith('/v24.0/me/media')).length;
+  await page.clock.setFixedTime(new Date('2026-10-03T17:00:00'));
+  await reloadAndUnlock(page);
+  await expect
+    .poll(() => calls.filter((call) => call.startsWith('/v24.0/me/media')).length)
+    .toBe(before + 1);
+  await nav(page).getByRole('link', { name: 'Zahlen' }).click();
+  await expect(page.getByTestId('instagram-sync-status')).toHaveText('gerade eben abgerufen');
+  await page.getByTestId('post-card').click();
+  await expect(page.getByTestId('post-history')).toContainText('2 Abrufe');
+  await page.keyboard.press('Escape');
+
+  // „Jetzt abrufen“ works any time; a failing fetch is shown in the status.
+  await context.unroute('https://graph.instagram.com/**');
+  await mockInstagram(context, { invalid: true });
+  await page.getByTestId('instagram-sync-now').click();
+  await expect(page.getByTestId('instagram-sync-error')).toContainText(
+    'Der Token ist ungültig oder abgelaufen.',
+  );
+});
+
+test('without a token „Zahlen“ offers to connect Instagram', async ({ page }) => {
+  await openApp(page, '/stats');
+  await expect(page.getByTestId('instagram-sync')).toContainText(
+    'Instagram ist noch nicht verbunden.',
+  );
 });

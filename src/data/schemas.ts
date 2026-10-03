@@ -40,6 +40,8 @@ export const LIMITS = {
   fileName: 200,
   listItems: 20,
   poses: 12,
+  /** Snapshots per post (Verlauf); older ones are thinned out. */
+  postHistory: 60,
 } as const;
 
 // --- Building blocks --------------------------------------------------------
@@ -146,6 +148,18 @@ const trafficSources = z.object({
   explore: percent.optional(),
 });
 
+/** Values of a post at one API fetch (Verlauf). */
+export const postSnapshotSchema = z.object({
+  at: timestamp,
+  views: count.optional(),
+  reach: count.optional(),
+  likes: count.optional(),
+  comments: count.optional(),
+  shares: count.optional(),
+  saves: count.optional(),
+  avgWatchSeconds: seconds.optional(),
+});
+
 const postFields = {
   /** Publishing date. */
   date: isoDate,
@@ -168,6 +182,15 @@ const postFields = {
   shares: count.optional(),
   saves: count.optional(),
   newFollowers: count.optional(),
+  /** Accounts reached (Instagram API). */
+  reach: count.optional(),
+  /** Exact publishing time (API import) – for weekday/time-of-day analysis. */
+  publishedAt: timestamp.optional(),
+  /** Caption length and hashtag count (API import) – the caption itself is not stored. */
+  captionLength: count.optional(),
+  hashtagCount: count.optional(),
+  /** Values at each API fetch (growth over time), oldest first. */
+  history: z.array(postSnapshotSchema).max(LIMITS.postHistory).default([]),
   retention: z
     .object({
       lengthSeconds: seconds.optional(),

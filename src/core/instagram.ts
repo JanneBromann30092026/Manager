@@ -16,8 +16,19 @@ export const TOKEN_LIFETIME_DAYS = 60;
 export const TOKEN_WARN_DAYS = 7;
 const DAY = 24 * 60 * 60 * 1000;
 
+/** Automatic fetch when the app is opened, at most this often. */
+export const AUTO_SYNC_HOURS = 6;
+
+/** Is an automatic fetch due (never fetched, or longer ago than 6 hours)? */
+export function isSyncDue(lastSyncAt: string, now: Date, hours = AUTO_SYNC_HOURS): boolean {
+  const last = Date.parse(lastSyncAt);
+  if (Number.isNaN(last)) return true;
+  return now.getTime() - last >= hours * 60 * 60 * 1000 || last > now.getTime();
+}
+
 export const REEL_METRICS = [
   'views',
+  'reach',
   'likes',
   'comments',
   'shares',
@@ -153,6 +164,18 @@ export function isReel(media: InstagramMedia): boolean {
   return media.media_product_type === 'REELS';
 }
 
+/** Caption length (characters) and number of hashtags; the caption itself is not stored. */
+export function captionStats(caption: string | undefined): {
+  captionLength?: number;
+  hashtagCount?: number;
+} {
+  if (caption === undefined) return {};
+  return {
+    captionLength: [...caption.trim()].length,
+    hashtagCount: caption.match(/#[\p{L}\p{N}_]+/gu)?.length ?? 0,
+  };
+}
+
 /** Topic from the caption: first line without hashtags and mentions. */
 export function topicFromCaption(caption: string | undefined): string | undefined {
   const line = (caption ?? '')
@@ -177,7 +200,10 @@ export function reelToDraft(media: InstagramMedia, insights?: Map<string, number
     platform: 'instagram',
     format: 'reel',
     topic: topicFromCaption(media.caption),
+    ...(Number.isNaN(published.getTime()) ? {} : { publishedAt: published.toISOString() }),
+    ...captionStats(media.caption),
     views: insights?.get('views'),
+    reach: insights?.get('reach'),
     likes: insights?.get('likes'),
     comments: insights?.get('comments'),
     shares: insights?.get('shares'),

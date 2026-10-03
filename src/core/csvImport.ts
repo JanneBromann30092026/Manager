@@ -261,6 +261,10 @@ export interface PostDraft {
   shares?: number;
   saves?: number;
   newFollowers?: number;
+  reach?: number;
+  publishedAt?: string;
+  captionLength?: number;
+  hashtagCount?: number;
   retention?: {
     lengthSeconds?: number;
     halfGoneSeconds?: number;

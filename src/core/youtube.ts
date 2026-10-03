@@ -116,6 +116,7 @@ export function videoToDraft(video: YouTubeVideo, analytics?: VideoAnalytics): Y
     platform: 'youtube',
     format: isShort ? 'short' : 'video',
     topic: video.snippet.title.trim().slice(0, 160) || undefined,
+    ...(Number.isNaN(published.getTime()) ? {} : { publishedAt: published.toISOString() }),
     views: video.statistics?.viewCount,
     likes: video.statistics?.likeCount,
     comments: video.statistics?.commentCount,
