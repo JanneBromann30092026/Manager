@@ -136,7 +136,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 2 Datenbank, Verschlüsselung & App-Sperre (aus Cockpit/Kompass)
 - [x] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
 - [x] 4 Ideen-Speicher & Community-Fragen
-- [ ] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
+- [x] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
 - [ ] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
 - [ ] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
 - [ ] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
@@ -224,3 +224,16 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - „Neues Video starten“ setzt die Idee auf „geplant“ und öffnet „Videos“ (Platzhalter bis
     Schritt 5, der dort ein Paket aus der Idee anlegt).
   - Screenshots legen erfundene Demo-Ideen über „Mehrere einfügen“ an.
+- Schritt 5 (Neues Video):
+  - Video hat zusätzlich `aiBlocks` (welche Bausteine von Claude stammen → „(Claude)“) und
+    `statusHistory` (Status + Zeit, max. 50); Felder mit Default, keine Dexie-Migration.
+  - Bausteine als Daten in `src/data/templates/videos.ts` (Vorlage mit Lückentext, Regeln,
+    KI-Prompt je Baustein); Clips nur bei Podcast. Ohne KI: „Vorlage einfügen“.
+  - Regel-Prüfung `src/core/videos.ts` (`checkVideo`): Hook, Follow-Grund, CTA, bei Geld-/Anlage-
+    Themen „Keine Anlageberatung.“, Quellen bei Zahlen (%/€), offene Lücken „…“. Veröffentlichen
+    mit offenen Punkten nur nach Rückfrage.
+  - CTA-Rotation: beim Anlegen `nextCta(brand.lastCta)`, gespeichert in `brand.lastCta`; manuelle
+    Änderung am Paket setzt die Rotation dort fort.
+  - Idee → Video über `/videos?idea=<id>`; Idee verknüpft (`videoId`), Status folgt dem Video
+    (gedreht/geschnitten → gedreht, veröffentlicht → veröffentlicht).
+  - Kopieren/Teilen über `src/services/share.ts` (Clipboard, Web Share). Die App veröffentlicht nie.

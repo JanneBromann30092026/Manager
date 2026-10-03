@@ -210,6 +210,34 @@ async function ideaEditor(page: Page) {
   await page.getByTestId('idea-form').waitFor();
 }
 
+/** Invented demo package with a filled script (never real data). */
+async function videoPackage(page: Page) {
+  if ((await page.getByTestId('video-card').count()) === 0) {
+    await page.getByTestId('video-add').click();
+    await page.getByTestId('video-topic').fill('So teile ich mein Gehalt auf');
+    await page.getByRole('button', { name: 'Paket anlegen' }).click();
+    await page
+      .getByTestId('block-script')
+      .getByRole('button', { name: 'Vorlage einfügen' })
+      .click();
+    await page
+      .getByTestId('block-caption')
+      .getByRole('button', { name: 'Vorlage einfügen' })
+      .click();
+    await page.getByTestId('video-status').getByRole('button', { name: 'Skript' }).click();
+    await page.getByText('Video-Paket angelegt').waitFor({ state: 'detached' });
+  } else {
+    await page.getByTestId('video-card').first().click();
+  }
+  await page.getByTestId('block-script').waitFor();
+}
+
+async function videoList(page: Page) {
+  await videoPackage(page);
+  await page.getByRole('button', { name: 'Zurück zu Videos' }).click();
+  await page.getByTestId('video-card').first().waitFor();
+}
+
 async function enableDevMode(page: Page) {
   await page.goto(`${PREVIEW_URL}#/settings`);
   const toggle = page.getByRole('switch', { name: 'Entwicklermodus' });
@@ -246,7 +274,7 @@ async function expandSidebar(page: Page) {
 
 const SHOTS: Shot[] = [
   { route: '/start', name: 'start' },
-  { route: '/videos', name: 'videos' },
+  { route: '/videos', name: 'videos', prepare: videoList },
   { route: '/covers', name: 'covers' },
   { route: '/stats', name: 'stats' },
   { route: '/plan', name: 'plan' },
@@ -254,6 +282,7 @@ const SHOTS: Shot[] = [
   { route: '/brand', name: 'brand' },
   { route: '/settings', name: 'settings', scroll: true },
   { route: '/ideas', name: 'ideas-editor', prepare: ideaEditor },
+  { route: '/videos', name: 'video-package', prepare: videoPackage, scroll: true },
   { route: '/settings', name: 'settings-security', prepare: settingsSecurity },
   { route: '/settings', name: 'settings-password', prepare: changePassword },
   { route: '/dev/ui', name: 'dev-ui', prepare: enableDevMode, scroll: true },

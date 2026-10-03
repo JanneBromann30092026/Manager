@@ -14,6 +14,7 @@ import {
   PLATFORMS,
   VALUE_SOURCES,
   VIDEO_KINDS,
+  VIDEO_BLOCK_KEYS,
   VIDEO_STATUSES,
 } from './domain';
 import {
@@ -97,6 +98,13 @@ const videoFields = {
     })
     .prefault({}),
   coverFileIds: z.array(id).max(LIMITS.coverFiles).default([]),
+  /** Blocks whose current text was written by Claude (shown as "(Claude)" drafts). */
+  aiBlocks: z.array(z.enum(VIDEO_BLOCK_KEYS)).max(VIDEO_BLOCK_KEYS.length).default([]),
+  /** Status changes, oldest first. */
+  statusHistory: z
+    .array(z.object({ status: z.enum(VIDEO_STATUSES), at: timestamp }))
+    .max(50)
+    .default([]),
   notes: optionalText(LIMITS.text),
   /** Invented demo/test record (removable in one go). */
   demo: z.boolean().default(false),

@@ -21,6 +21,18 @@ export type CtaType = (typeof CTA_TYPES)[number];
 export const VIDEO_KINDS = ['reel', 'podcast'] as const;
 export type VideoKind = (typeof VIDEO_KINDS)[number];
 
+/** The building blocks of a video package (clips only for podcasts). */
+export const VIDEO_BLOCK_KEYS = [
+  'script',
+  'cutList',
+  'cover',
+  'caption',
+  'youtube',
+  'communityQuestion',
+  'clips',
+] as const;
+export type VideoBlockKey = (typeof VIDEO_BLOCK_KEYS)[number];
+
 export const VIDEO_STATUSES = ['idea', 'script', 'filmed', 'edited', 'published'] as const;
 export type VideoStatus = (typeof VIDEO_STATUSES)[number];
 

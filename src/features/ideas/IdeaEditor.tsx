@@ -196,11 +196,10 @@ function Form({
             variant="secondary"
             icon={Clapperboard}
             onClick={() =>
-              void save({ status: 'planned' }).then((ok) => {
+              void save().then((ok) => {
                 if (!ok) return;
-                toast.info(t.planned);
                 onClose();
-                void navigate('/videos');
+                void navigate(`/videos?idea=${idea.id}`);
               })
             }
           >
