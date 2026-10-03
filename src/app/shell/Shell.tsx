@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { Spinner } from '@/components/ui';
-import { ComingSoonPage } from '@/features/coming-soon/ComingSoonPage';
+import { PlanPage } from '@/features/plan/PlanPage';
 import { BrandPage } from '@/features/brand/BrandPage';
 import { CoversPage } from '@/features/covers/CoversPage';
 import { IdeasPage } from '@/features/ideas/IdeasPage';
@@ -67,7 +67,7 @@ function AnimatedRoutes() {
             <Route path="/videos/:id" element={<VideoPage />} />
             <Route path="/covers" element={<CoversPage />} />
             <Route path="/stats" element={<StatsPage />} />
-            <Route path="/plan" element={<ComingSoonPage page="plan" />} />
+            <Route path="/plan" element={<PlanPage />} />
             <Route path="/ideas" element={<IdeasPage />} />
             <Route path="/brand" element={<BrandPage />} />
             <Route path="/settings" element={<SettingsPage />} />

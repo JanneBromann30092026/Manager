@@ -6,3 +6,4 @@ export * from './ideas';
 export * from './videos';
 export * from './stats';
 export * from './report';
+export * from './plan';

@@ -139,7 +139,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
 - [x] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
 - [x] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
-- [ ] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
+- [x] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
 - [ ] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
 - [ ] 10 Instagram-Anbindung (Machbarkeit zuerst prüfen, sonst Screenshot-Weg)
 - [ ] 11 Push-Mitteilungen
@@ -272,3 +272,15 @@ Hoch-/Querformat, Split View, iPhone-Layout.
     vergangene, sonst die laufende.
   - Start-Dashboard: Ziel, Hauptkennzahl (Woche/30 Tage), Videos dieser Woche (Plan folgt in
     Schritt 8), nächster CTA, letzte Beiträge.
+- Schritt 8 (Wochenplan):
+  - Ein Plan je ISO-Woche (`plans`, keine Migration); Seite `/plan?week=`, Standard nächste Woche.
+  - Zeitbedarf als Vorlage `templates/plan.ts` (Reel 100 = Skript 20 + Dreh 30 + Schnitt 40 +
+    Veröffentlichen 10, Story 10, Q&A 20, Podcast 120, Sonstiges 30; Budget 240), änderbar in
+    „Zeitbedarf“ (Einstellungen `planBudget`/`planDurations`, technisch, unverschlüsselt).
+  - Vorschlag `core/plan.ts` (`suggestPlan`): Q&A-Story Mi immer; bis 2 Reels (Di/Do) nur im
+    Budget – zuerst begonnene Videos (nur Restaufwand nach Status), dann offene Ideen nach
+    `sortIdeas`; dann Stories Mo/Fr/Sa. In anderen aktuellen/künftigen Wochen geplante Ideen werden
+    übersprungen. Ideen im Plan → Status „geplant“. Warnungen: keine Q&A, kein Reel, über Budget.
+  - Kalender: `core/ics.ts` (aus Kompass, PRODID Manager, UID `<id>@manager`), ganztägig,
+    Erinnerung 9 Uhr am Tag, nur offene Aufgaben; Teilen oder Datei sichern.
+  - Start-Dashboard zeigt die Aufgaben der laufenden Woche; Platzhalterseite (coming-soon) entfernt.

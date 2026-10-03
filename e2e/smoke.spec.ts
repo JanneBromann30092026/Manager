@@ -50,7 +50,7 @@ test('navigation switches pages', async ({ page }) => {
     ['Videos', 'Noch keine Video-Pakete'],
     ['Cover', 'Textvarianten'],
     ['Zahlen', 'Noch keine Zahlen'],
-    ['Plan', 'Kommt in Schritt 8'],
+    ['Plan', 'Vorschlag erstellen'],
     ['Ideen', 'Noch keine Ideen'],
     ['Marke', 'Kanalprofil'],
     ['Einstellungen', 'Darstellung'],

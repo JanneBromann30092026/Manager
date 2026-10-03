@@ -2,7 +2,9 @@ import { z } from 'zod';
 import { create } from 'zustand';
 import { DEFAULT_AI_MODEL, MODEL_ID_PATTERN } from '@/core/ai/models';
 import { DEFAULT_LOCK_AFTER_MINUTES, LOCK_AFTER_MINUTES } from '@/core/lock';
+import { PLAN_ITEM_KINDS } from '@/data/domain';
 import { settingsRepo } from '@/data/repositories';
+import { PLAN_BUDGET_MINUTES, PLAN_DEFAULT_MINUTES } from '@/data/templates';
 
 export const THEME_PREFERENCES = ['system', 'light', 'dark'] as const;
 export type ThemePreference = (typeof THEME_PREFERENCES)[number];
@@ -24,6 +26,24 @@ const schemas = {
   // Optional AI (off by default; the key itself is an encrypted secret)
   aiEnabled: z.boolean(),
   aiModel: z.string().regex(MODEL_ID_PATTERN),
+  // Weekly plan: time budget and time per task (templates, editable)
+  planBudget: z
+    .int()
+    .min(30)
+    .max(40 * 60),
+  planDurations: z.object(
+    Object.fromEntries(
+      PLAN_ITEM_KINDS.map((kind) => [
+        kind,
+        z
+          .int()
+          .min(0)
+          .max(12 * 60),
+      ]),
+    ) as {
+      [K in (typeof PLAN_ITEM_KINDS)[number]]: z.ZodInt;
+    },
+  ),
   // Developer
   devMode: z.boolean(),
 };
@@ -38,6 +58,8 @@ export const SETTINGS_DEFAULTS: SettingsValues = {
   lockAfterMinutes: DEFAULT_LOCK_AFTER_MINUTES,
   aiEnabled: false,
   aiModel: DEFAULT_AI_MODEL,
+  planBudget: PLAN_BUDGET_MINUTES,
+  planDurations: PLAN_DEFAULT_MINUTES,
   devMode: false,
 };
 
