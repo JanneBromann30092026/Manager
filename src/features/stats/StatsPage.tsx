@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { FileUp, MonitorPlay, Plus, ScanText, Users } from 'lucide-react';
+import { Camera, FileUp, MonitorPlay, Plus, ScanText, Users } from 'lucide-react';
 import { ActionMenuButton, Button, EmptyState, SegmentedControl } from '@/components/ui';
 import { Page } from '@/app/shell/Page';
 import type { Post } from '@/data/schemas';
@@ -13,6 +13,7 @@ import { PostEditor, type PostPrefill } from './PostEditor';
 import { PostsTab } from './PostsTab';
 import { ReportTab } from './ReportTab';
 import { ScreenshotDialog } from './ScreenshotDialog';
+import { InstagramImportDialog } from './InstagramImportDialog';
 import { YouTubeImportDialog } from './YouTubeImportDialog';
 import { usePosts } from './statsData';
 
@@ -25,6 +26,7 @@ type Dialog =
   | { kind: 'import' }
   | { kind: 'screenshot' }
   | { kind: 'youtube' }
+  | { kind: 'instagram' }
   | { kind: 'account' }
   | null;
 
@@ -59,6 +61,12 @@ export function StatsPage() {
           },
         ]
       : []),
+    {
+      id: 'instagram',
+      label: de.instagram.import.menu,
+      icon: Camera,
+      onSelect: () => setDialog({ kind: 'instagram' }),
+    },
     {
       id: 'youtube',
       label: de.youtube.import.menu,
@@ -150,6 +158,7 @@ export function StatsPage() {
         onRead={(prefill) => setDialog({ kind: 'post', prefill })}
       />
       <YouTubeImportDialog open={dialog?.kind === 'youtube'} onClose={close} />
+      <InstagramImportDialog open={dialog?.kind === 'instagram'} onClose={close} />
     </Page>
   );
 }

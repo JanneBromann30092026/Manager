@@ -4,8 +4,7 @@
  * duration and subscribers gained per video. Values YouTube does not deliver stay empty.
  */
 import { z } from 'zod';
-import type { Post } from '@/data/schemas';
-import { normalizeKey, type MergePlan, type PostDraft } from './csvImport';
+import type { ApiDraft } from './apiImport';
 import { localDateOf } from './dates';
 
 /** Shorts can be up to 3 minutes long (since October 2024). */
@@ -100,9 +99,7 @@ export function analyticsByVideo(response: AnalyticsResponse): Map<string, Video
   return result;
 }
 
-export interface YouTubeDraft extends PostDraft {
-  externalId: string;
-}
+export type YouTubeDraft = ApiDraft;
 
 /** One post draft per video (publish date in local time). */
 export function videoToDraft(video: YouTubeVideo, analytics?: VideoAnalytics): YouTubeDraft {
@@ -126,32 +123,6 @@ export function videoToDraft(video: YouTubeVideo, analytics?: VideoAnalytics): Y
     newFollowers: analytics?.subscribersGained,
     retention: length !== undefined ? { lengthSeconds: length } : undefined,
   };
-}
-
-type Target = Pick<Post, 'id' | 'date' | 'platform' | 'topic'> & { externalId?: string };
-
-/**
- * Matches each video to an existing post: same YouTube id, else same day + YouTube + title
- * (e.g. entered by hand before). The rest is new.
- */
-export function planYouTubeImport<T extends Target>(
-  existing: readonly T[],
-  drafts: readonly YouTubeDraft[],
-): MergePlan<T>[] {
-  return drafts.map((draft) => {
-    const target =
-      existing.find((post) => post.externalId === draft.externalId) ??
-      existing.find(
-        (post) =>
-          !post.externalId &&
-          post.platform === 'youtube' &&
-          post.date === draft.date &&
-          post.topic !== undefined &&
-          draft.topic !== undefined &&
-          normalizeKey(post.topic) === normalizeKey(draft.topic),
-      );
-    return target ? { kind: 'update', target, draft } : { kind: 'create', draft };
-  });
 }
 
 /** Video ids in chunks (the APIs take at most 50 ids per call). */

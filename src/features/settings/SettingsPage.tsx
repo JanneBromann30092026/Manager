@@ -7,6 +7,7 @@ import { useShortcutsHelp } from '@/app/shortcuts/shortcutsStore';
 import { Page } from '@/app/shell/Page';
 import { de } from '@/i18n/de';
 import { vault } from '@/services/vault';
+import { InstagramSettings } from '@/features/connections/InstagramSettings';
 import { YouTubeSettings } from '@/features/connections/YouTubeSettings';
 import { AiSettings } from './AiSettings';
 import { SecuritySettings } from './SecuritySettings';
@@ -107,6 +108,10 @@ export function SettingsPage() {
 
         <Section title={de.youtube.title} testId="settings-youtube">
           <YouTubeSettings />
+        </Section>
+
+        <Section title={de.instagram.title} testId="settings-instagram">
+          <InstagramSettings />
         </Section>
 
         <Section title={t.storage.title} testId="settings-storage">

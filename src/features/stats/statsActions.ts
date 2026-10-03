@@ -10,7 +10,7 @@ import { BASELINE_STATS } from '@/data/templates';
  */
 export async function applyImport(
   plans: readonly MergePlan<Post>[],
-  source: Extract<ValueSource, 'csv' | 'youtubeApi'> = 'csv',
+  source: Extract<ValueSource, 'csv' | 'youtubeApi' | 'instagramApi'> = 'csv',
 ): Promise<{ created: number; updated: number }> {
   const measuredAt = new Date().toISOString();
   const creates = plans.flatMap((plan) =>

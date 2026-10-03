@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { Download, ExternalLink, LogIn } from 'lucide-react';
 import { Button, Modal, toast } from '@/components/ui';
 import { localDateOf } from '@/core/dates';
-import { planYouTubeImport } from '@/core/youtube';
+import { planApiImport } from '@/core/apiImport';
 import { postsRepo } from '@/data/repositories';
 import { de } from '@/i18n/de';
 import { useGoogleAuth, validToken, signOut } from '@/services/google/auth';
@@ -24,7 +24,7 @@ function Content({ onClose }: { onClose: () => void }) {
   const [result, setResult] = useState<YouTubeFetchResult | null>(null);
 
   const signedIn = token !== null;
-  const plans = result ? planYouTubeImport(postsRepo.list(), result.drafts) : [];
+  const plans = result ? planApiImport(postsRepo.list(), result.drafts) : [];
   const created = plans.filter((plan) => plan.kind === 'create').length;
 
   const fetchNow = async () => {

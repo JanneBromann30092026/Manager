@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { planApiImport } from './apiImport';
 import {
   analyticsByVideo,
   analyticsResponseSchema,
   chunk,
   parseIsoDuration,
-  planYouTubeImport,
   videoToDraft,
   videosResponseSchema,
 } from './youtube';
@@ -89,12 +89,12 @@ describe('youtube mapping', () => {
         externalId: 'vid2',
       },
     ];
-    const plans = planYouTubeImport(existing, drafts);
+    const plans = planApiImport(existing, drafts);
     expect(plans.map((plan) => (plan.kind === 'update' ? plan.target.id : 'new'))).toEqual([
       'p1',
       'p2',
     ]);
-    expect(planYouTubeImport([], drafts).every((plan) => plan.kind === 'create')).toBe(true);
+    expect(planApiImport([], drafts).every((plan) => plan.kind === 'create')).toBe(true);
   });
 
   it('chunks ids by 50', () => {
