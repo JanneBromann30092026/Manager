@@ -137,7 +137,7 @@ Hoch-/Querformat, Split View, iPhone-Layout.
 - [x] 3 Einstellungen, optionale KI & Marke (Brand-Kit, Regeln, Kanalprofil)
 - [x] 4 Ideen-Speicher & Community-Fragen
 - [x] 5 Neues Video (Video-Pakete, CTA-Rotation, Kopieren)
-- [ ] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
+- [x] 6 Cover-Studio (Canvas, 3 Varianten, Reel + Thumbnail)
 - [ ] 7 Zahlen & Auswertung (Erfassen, CSV-/Screenshot-Import, Wochenreport, Start-Dashboard)
 - [ ] 8 Wochenplan (4-Std.-Budget, Kalender-Export)
 - [ ] 9 YouTube-Anbindung (OAuth, Data + Analytics API, nur lesend)
@@ -237,3 +237,17 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Idee → Video über `/videos?idea=<id>`; Idee verknüpft (`videoId`), Status folgt dem Video
     (gedreht/geschnitten → gedreht, veröffentlicht → veröffentlicht).
   - Kopieren/Teilen über `src/services/share.ts` (Clipboard, Web Share). Die App veröffentlicht nie.
+- Schritt 6 (Cover-Studio):
+  - Layout als reine Logik `src/core/coverLayout.ts` (Texte normalisieren, Varianten aus dem
+    Cover-Baustein lesen/schreiben, Zeilenumbruch auf max. 2 Zeilen ohne Worttrennung,
+    Schriftgröße per Binärsuche, Boxen für Reel/Thumbnail, Pose nach Text/Hook, Dateiname);
+    `Measure`-Funktion wird übergeben (Canvas im Browser, Monospace-Ersatz in Tests).
+  - Zeichnen in `src/services/cover/render.ts` (Canvas 2D): Verlauf dunkel links unten → hell
+    rechts oben, Akzentlinien, Foto/Pose rechts (sonst Platzhalter-Silhouette), Thumbnail mit
+    dunklerer linker Seite und Textkontur. Hilfslinie 4:5 nur in der Vorschau, nie im Export.
+  - Texte eines Pakets stehen im Cover-Baustein („1. …“-Liste) und werden dort gespeichert;
+    Pose am Video (`coverPose`, leer = automatisch; Feld optional, keine Migration). Ohne Paket:
+    freier Text, nicht gespeichert.
+  - Export: PNG per Share-Sheet (`saveFile` in share.ts, iPad „Bild sichern“ → Fotos), sonst
+    Download. Cover-PNGs werden nicht in der App gespeichert (`coverFileIds` bleibt ungenutzt).
+  - Route `/covers?video=<id>`; „Zum Cover-Studio“ im Cover-Baustein öffnet sie.

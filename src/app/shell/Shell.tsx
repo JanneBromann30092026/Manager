@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Spinner } from '@/components/ui';
 import { ComingSoonPage } from '@/features/coming-soon/ComingSoonPage';
 import { BrandPage } from '@/features/brand/BrandPage';
+import { CoversPage } from '@/features/covers/CoversPage';
 import { IdeasPage } from '@/features/ideas/IdeasPage';
 import { VideoPage } from '@/features/videos/VideoPage';
 import { VideosPage } from '@/features/videos/VideosPage';
@@ -62,7 +63,7 @@ function AnimatedRoutes() {
             <Route path="/start" element={<ComingSoonPage page="start" />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/videos/:id" element={<VideoPage />} />
-            <Route path="/covers" element={<ComingSoonPage page="covers" />} />
+            <Route path="/covers" element={<CoversPage />} />
             <Route path="/stats" element={<ComingSoonPage page="stats" />} />
             <Route path="/plan" element={<ComingSoonPage page="plan" />} />
             <Route path="/ideas" element={<IdeasPage />} />

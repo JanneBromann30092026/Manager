@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { CalendarDays, ChartColumn, Image, LayoutDashboard, type LucideIcon } from 'lucide-react';
+import { CalendarDays, ChartColumn, LayoutDashboard, type LucideIcon } from 'lucide-react';
 import { Badge, Surface } from '@/components/ui';
 import { Page } from '@/app/shell/Page';
 import { de } from '@/i18n/de';
@@ -10,7 +10,6 @@ export type ComingSoonKey = keyof typeof de.comingSoon.pages;
 /** Navigation label, icon and roadmap step of every page that is still a placeholder. */
 const PAGES: Record<ComingSoonKey, { title: string; icon: LucideIcon; step: number }> = {
   start: { title: de.nav.start, icon: LayoutDashboard, step: 7 },
-  covers: { title: de.nav.covers, icon: Image, step: 6 },
   stats: { title: de.nav.stats, icon: ChartColumn, step: 7 },
   plan: { title: de.nav.plan, icon: CalendarDays, step: 8 },
 };

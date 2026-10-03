@@ -238,6 +238,21 @@ async function videoList(page: Page) {
   await page.getByTestId('video-card').first().waitFor();
 }
 
+/** Cover studio for the demo package with invented texts (placeholder silhouette, no photo). */
+async function coverStudio(page: Page) {
+  await page.goto(`${PREVIEW_URL}#/videos`);
+  await page.getByRole('heading', { level: 1, name: 'Videos' }).waitFor();
+  await videoPackage(page);
+  await page.getByTestId('block-cover').getByRole('button', { name: 'Zum Cover-Studio' }).click();
+  const texts = ['Wohin mit dem Gehalt?', '3 Konten reichen', 'Mein Gehalt-Plan'];
+  for (const [index, text] of texts.entries()) {
+    await page.getByTestId(`cover-text-${index + 1}`).fill(text);
+  }
+  await page.getByTestId('cover-variant').first().click();
+  await page.locator('[data-testid="cover-reel"][data-ready="true"]').waitFor();
+  await page.waitForTimeout(400);
+}
+
 async function enableDevMode(page: Page) {
   await page.goto(`${PREVIEW_URL}#/settings`);
   const toggle = page.getByRole('switch', { name: 'Entwicklermodus' });
@@ -275,7 +290,7 @@ async function expandSidebar(page: Page) {
 const SHOTS: Shot[] = [
   { route: '/start', name: 'start' },
   { route: '/videos', name: 'videos', prepare: videoList },
-  { route: '/covers', name: 'covers' },
+  { route: '/covers', name: 'covers', prepare: coverStudio, scroll: true },
   { route: '/stats', name: 'stats' },
   { route: '/plan', name: 'plan' },
   { route: '/ideas', name: 'ideas', prepare: ideas },

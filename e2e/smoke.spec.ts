@@ -48,7 +48,7 @@ test('navigation switches pages', async ({ page }) => {
   await openApp(page);
   const pages = [
     ['Videos', 'Noch keine Video-Pakete'],
-    ['Cover', 'Kommt in Schritt 6'],
+    ['Cover', 'Textvarianten'],
     ['Zahlen', 'Kommt in Schritt 7'],
     ['Plan', 'Kommt in Schritt 8'],
     ['Ideen', 'Noch keine Ideen'],
