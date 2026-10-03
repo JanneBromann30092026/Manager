@@ -3,7 +3,12 @@ import { Badge, Button, Surface, toast } from '@/components/ui';
 import { isoWeekOf, localDateOf, weekRange } from '@/core/dates';
 import { followersPer1000, isTooEarly, postsInLastDays, totals } from '@/core/metrics';
 import type { Post } from '@/data/schemas';
-import { FORMAT_LABELS, PLATFORM_LABELS, VALUE_SOURCE_LABELS } from '@/data/templates';
+import {
+  FORMAT_LABELS,
+  GOAL_DEFAULTS,
+  PLATFORM_LABELS,
+  VALUE_SOURCE_LABELS,
+} from '@/data/templates';
 import { de } from '@/i18n/de';
 import { hasBaseline, importBaseline } from './statsActions';
 import { formatDay, formatNumber, useAccountStats } from './statsData';
@@ -28,7 +33,8 @@ function MetricCard({ title, posts }: { title: string; posts: readonly Post[] })
 
 function FollowersCard({ onAdd }: { onAdd: () => void }) {
   const stats = useAccountStats();
-  const latest = stats[0];
+  // The goal counts followers of one platform (YouTube subscribers come from the API too).
+  const latest = stats.find((stat) => stat.platform === GOAL_DEFAULTS.platform);
   return (
     <Surface padding="sm" className="flex flex-col gap-2" data-testid="followers-card">
       <span className="text-sm font-medium text-fg-secondary">{t.followersCard}</span>

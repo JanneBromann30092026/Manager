@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { FileUp, Plus, ScanText, Users } from 'lucide-react';
+import { FileUp, MonitorPlay, Plus, ScanText, Users } from 'lucide-react';
 import { ActionMenuButton, Button, EmptyState, SegmentedControl } from '@/components/ui';
 import { Page } from '@/app/shell/Page';
 import type { Post } from '@/data/schemas';
@@ -13,6 +13,7 @@ import { PostEditor, type PostPrefill } from './PostEditor';
 import { PostsTab } from './PostsTab';
 import { ReportTab } from './ReportTab';
 import { ScreenshotDialog } from './ScreenshotDialog';
+import { YouTubeImportDialog } from './YouTubeImportDialog';
 import { usePosts } from './statsData';
 
 const t = de.stats;
@@ -23,6 +24,7 @@ type Dialog =
   | { kind: 'post'; post?: Post; prefill?: PostPrefill }
   | { kind: 'import' }
   | { kind: 'screenshot' }
+  | { kind: 'youtube' }
   | { kind: 'account' }
   | null;
 
@@ -57,6 +59,12 @@ export function StatsPage() {
           },
         ]
       : []),
+    {
+      id: 'youtube',
+      label: de.youtube.import.menu,
+      icon: MonitorPlay,
+      onSelect: () => setDialog({ kind: 'youtube' }),
+    },
     {
       id: 'account',
       label: t.addFollowers,
@@ -141,6 +149,7 @@ export function StatsPage() {
         onClose={close}
         onRead={(prefill) => setDialog({ kind: 'post', prefill })}
       />
+      <YouTubeImportDialog open={dialog?.kind === 'youtube'} onClose={close} />
     </Page>
   );
 }

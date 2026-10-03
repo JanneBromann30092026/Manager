@@ -549,6 +549,68 @@ export const de = {
       fileName: (week: string) => `manager-wochenplan-${week}.ics`,
     },
   },
+  youtube: {
+    title: 'YouTube',
+    intro: 'Liest deine Videos und Statistiken (nur lesend). Die App lädt nie etwas hoch.',
+    clientId: 'OAuth-Client-ID',
+    clientIdHint:
+      'Aus der Google Cloud Console, endet auf .apps.googleusercontent.com. Kein Client-Secret eintragen.',
+    clientIdInvalid: 'Das ist keine Client-ID (…apps.googleusercontent.com).',
+    clientIdSave: 'Speichern',
+    clientIdSaved: 'Client-ID gespeichert.',
+    noClientId: 'Trag zuerst die Client-ID ein.',
+    signedOut: 'Nicht angemeldet',
+    signedIn: (time: string) => `Angemeldet bis ${time} Uhr`,
+    signIn: 'Mit Google anmelden',
+    signInRedirect: 'Anmelden per Weiterleitung',
+    signInRedirectHint:
+      'Falls das Anmeldefenster nicht zurück in die App führt: Die App wechselt zu Google und kommt zurück. Danach entsperrst du sie einmal.',
+    waiting: 'Warte auf Google … Melde dich im neuen Fenster an.',
+    cancel: 'Abbrechen',
+    signOut: 'Abmelden',
+    signedInToast: 'Bei Google angemeldet.',
+    test: 'Verbindung testen',
+    testOk: (title: string, subscribers: string) =>
+      `Verbunden mit „${title}“ · ${subscribers} Abonnenten`,
+    tokenNote:
+      'Die Anmeldung gilt eine Stunde und liegt nur im Arbeitsspeicher; beim Sperren ist sie weg.',
+    authErrors: {
+      noClientId: 'Trag zuerst die Client-ID ein.',
+      denied: 'Anmeldung abgelehnt.',
+      scopes: 'Bitte beide Zugriffe erlauben (YouTube und YouTube Analytics).',
+      state: 'Die Anmeldung passte nicht zu dieser Sitzung. Bitte erneut anmelden.',
+      timeout: 'Keine Antwort von Google. Versuch es per Weiterleitung.',
+      cancelled: 'Anmeldung abgebrochen.',
+      failed: 'Anmeldung fehlgeschlagen. Versuch es per Weiterleitung.',
+    },
+    errors: {
+      auth: 'Die Anmeldung ist abgelaufen. Bitte neu anmelden.',
+      notEnabled:
+        'Die API ist im Google-Projekt nicht aktiviert (YouTube Data API v3 und YouTube Analytics API).',
+      forbidden: 'Google verweigert den Zugriff. Bist du als Testnutzer eingetragen?',
+      noChannel:
+        'Zu diesem Google-Konto gibt es keinen YouTube-Kanal. Wähl bei der Anmeldung den Kanal aus.',
+      network: 'Keine Verbindung. Bist du online?',
+      failed: 'YouTube hat nicht wie erwartet geantwortet.',
+    },
+    import: {
+      menu: 'Von YouTube abrufen',
+      title: 'Von YouTube abrufen',
+      text: 'Holt deine neuesten Videos (bis 100) mit Aufrufen, Likes, Kommentaren, Wiedergabedauer und neuen Abonnenten.',
+      fetch: 'Abrufen',
+      fetching: 'Rufe ab …',
+      summary: (created: number, updated: number) => `${created} neu, ${updated} aktualisiert`,
+      channel: (title: string, subscribers: string) => `${title} · ${subscribers} Abonnenten`,
+      none: 'Auf dem Kanal sind noch keine Videos.',
+      analyticsFailed:
+        'Wiedergabedauer und neue Abonnenten fehlen: Die YouTube Analytics API hat nicht geantwortet. Diese Werte bleiben leer.',
+      lag: 'YouTube Analytics ist 2–3 Tage im Verzug; ganz neue Videos haben dort noch keine Werte.',
+      apply: 'Übernehmen',
+      done: (created: number, updated: number) =>
+        `YouTube übernommen: ${created} neu, ${updated} aktualisiert.`,
+      toSettings: 'Zu den Einstellungen',
+    },
+  },
   ideas: {
     title: 'Ideen',
     add: 'Neue Idee',

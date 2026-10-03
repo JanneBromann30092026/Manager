@@ -162,6 +162,19 @@ async function settingsSecurity(page: Page) {
   });
 }
 
+async function settingsYouTube(page: Page) {
+  const input = page.getByTestId('youtube-client-id');
+  if ((await input.inputValue()) === '') {
+    // Invented client id (no real Google project in screenshots).
+    await input.fill('123456-demo.apps.googleusercontent.com');
+    await page.getByTestId('youtube-client-id-save').click();
+    await page.getByText('Client-ID gespeichert.').waitFor({ state: 'detached' });
+  }
+  await page.getByTestId('settings-youtube').evaluate((element) => {
+    element.scrollIntoView({ block: 'start' });
+  });
+}
+
 async function changePassword(page: Page) {
   await page.getByRole('button', { name: 'Passwort ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Passwort ändern' });
@@ -373,6 +386,7 @@ const SHOTS: Shot[] = [
   { route: '/videos', name: 'video-package', prepare: videoPackage, scroll: true },
   { route: '/settings', name: 'settings-security', prepare: settingsSecurity },
   { route: '/settings', name: 'settings-password', prepare: changePassword },
+  { route: '/settings', name: 'settings-youtube', prepare: settingsYouTube },
   { route: '/stats', name: 'stats-report', prepare: statsTab('Report'), scroll: true },
   { route: '/stats', name: 'stats-insights', prepare: statsTab('Was wirkt') },
   { route: '/plan', name: 'plan-calendar', prepare: planCalendar },
