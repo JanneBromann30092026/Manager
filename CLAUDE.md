@@ -293,6 +293,8 @@ Hoch-/Querformat, Split View, iPhone-Layout.
   - Token nur im Arbeitsspeicher (`useGoogleAuth`), 1 h gültig, beim Sperren gelöscht. Beide Scopes
     (youtube.readonly, yt-analytics.readonly) Pflicht. Client-ID als Einstellung `googleClientId`
     (öffentlich, Vorgabe `DEFAULT_GOOGLE_CLIENT_ID` in core/google/oauth.ts).
+    Echte Client-ID des Nutzers seit 03.10.2026 als Vorgabe eingetragen (Google-Projekt „Manager“,
+    Testmodus, Nutzer als Testnutzer).
   - Abruf `services/youtube.ts`: Kanal (Abonnenten → `accountStats` Plattform youtube), Uploads
     (max. 100), Videos (Aufrufe, Likes, Kommentare, Länge), Analytics je Video
     (averageViewDuration, subscribersGained → neue Follower). Fällt Analytics aus, bleiben diese Werte
